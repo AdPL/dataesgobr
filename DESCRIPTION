@@ -1,0 +1,21 @@
+Package: dataesgobr
+Type: Package
+Title: Package to access and use Government's Spain API
+Version: 0.0.1
+Author: Adrián Pérez López <adrianpelopez@gmail.com>
+Maintainer: Adrián Pérez López <adrianpelopez@gmail.com>
+Description: DataEsGobR is a R package to work with the government's API that allow you to download, analyze and generate information through datasets obtained  from the API.
+License: LGPL (>= 3) | file LICENSE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.1.1
+Imports:
+  stringr,
+  dplyr,
+  readr,
+  httr,
+  stringi,
+  jsonlite,
+  graphics
+Suggests:
+  testthat
