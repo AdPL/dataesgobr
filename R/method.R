@@ -178,6 +178,21 @@ get_all_keywords <- function(data) {
   list_of_keywords
 }
 
+#' @title Load dataset from a data.frame
+#'
+#' @param dataframe A data.frame with datasets from datos.gob.es
+#' @param row A number of the row in the data.frame. If the dataset has more
+#' than one element this param determinates the row to load
+#' @export
+#' @return A dataesgobr object
+load_dataset <- function(dataframe, row = 1) {
+  stopifnot(class(dataframe) == "data.frame")
+  stopifnot(nrow(dataframe) >= row && row > 0)
+
+  row_to_load <- dataframe[row,]
+  dataesgobr(dataframe = row_to_load)
+}
+
 #' @title Load a dataset asociate with dataesgobr object
 #' @description This function downloads the data associated with the dataset
 #' passed like param and downloads from datos.gob.es
