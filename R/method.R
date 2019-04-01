@@ -105,7 +105,7 @@ filter_by_description <- function(data, q) {
   result
 }
 
-#' @title Filter data.frame by title using q param
+#' @title Filter data.frame by keywords using keywords param
 #'
 #' @param data A data.frame that will be filtered
 #' @param keywords A string to match in data.frame data
@@ -123,9 +123,9 @@ filter_by_keywords <- function(data, keywords) {
   }
 
   stopifnot(class(data) == 'data.frame', class(keywords) == 'character')
-
-  message(typeof(data$keyword))
-  result <- filter(data, is.element(c(keywords), data$keyword))
+  result <- dplyr::filter(data, stringr::str_detect(
+    stringr::str_to_lower(unlist(as.character(data$keyword))),
+    stringr::str_to_lower(keywords)))
 }
 
 #' @title Represent keywords in a plot
