@@ -212,61 +212,30 @@ load_data <- function(x) {
   stopifnot(class(x) == 'dataesgobr')
 
   if (is.na(x$formats['text/csv'])) {
-    cat("Error: csv data not found.")
+    message("Error: csv data not found.")
   } else {
     url <- x$formats['text/csv']
     position <- stri_locate_last(url, regex = "/")
     name <- substr(url, position+1, 10000)
 
-
     if (str_detect(name, ".csv$")) {
       message("Extension detected")
       message("Downloading file: ", name, "\n")
-
-      cap_speed <- progress(type = c("down", "up"), con = stdout())
-      GET( url, write_disk(name, overwrite = TRUE), progress(), cap_speed)
-
-      message("\nChecking file")
-      content <- read_lines(name)
-      vector_complete = vector('character')
-
-      total_lines <- 0
-      count_lines <- 0
-
-      pb <- txtProgressBar(min = 0, max = length(content))
-      for ( i in 1:length(content) ) {
-        total_lines = total_lines + 1
-        if ( str_detect(content[[i]], "([0-9]|.)(,|;)") ) {
-          count_lines = count_lines + 1
-          line <- content[[i]]
-          line <- str_replace_all(line, "\"", "")
-          vector_complete = c(vector_complete, line)
-          setTxtProgressBar(pb, i)
-        }
-      }
-      close(pb)
-
-      if ( count_lines == 0 ) {
-        stop("Load failed: The file does not have correctly format,
-             please check: ", name)
-      } else if ( total_lines > count_lines ) {
-        message(total_lines, " vs ", count_lines)
-        warning("The file is not totally correct")
-        warning("It will be save but is possible that you can not read
-                this correctly")
-        warning("If you have any problem please check: ", name)
-      } else {
-        message("\nFile is correct!")
-      }
-      write.table(vector_complete,
-                  name,
-                  row.names = FALSE,
-                  col.names = FALSE,
-                  quote = FALSE,
-                  fileEncoding = "UTF-8")
-      datos <- read_csv(name)
+    } else if (str_detect(name, ".csv")) {
+      name <- substr(name, 1, str_locate(name, ".csv")[1,]["end"])
+      url <- substr(url, 1, stri_locate_last(url, regex = "/"))
+      url <- paste(url, name, sep = "")
     } else {
       message("This function is not implemented yet")
     }
+
+    cap_speed <- progress(type = c("down", "up"), con = stdout())
+    GET(url, write_disk(name, overwrite = TRUE), progress(), cap_speed)
+
+    vector_complete <- check_file(name)
+
+    write.table(vector_complete, name, row.names = FALSE, col.names = FALSE,
+                quote = FALSE, fileEncoding = "UTF-8")
+    datos <- read_csv(name)
   }
 }
