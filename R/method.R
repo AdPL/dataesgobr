@@ -286,3 +286,48 @@ check_file <- function(file) {
   }
   result
 }
+
+check_csv_file <- function(file) {
+  content <- read_lines(file)
+  vector_complete = vector('character')
+
+  total_lines <- 0
+  count_lines <- 0
+  file_length <- length(content)
+
+  if(file_length == 0) {
+    warning("The file is empty")
+    correct <- FALSE
+  }
+
+  message("Checking csv file")
+  pb <- txtProgressBar(min = 0, max = length(content))
+  for ( i in 1:length(content) ) {
+    total_lines = total_lines + 1
+    if ( str_detect(content[[i]], "([0-9]|.)(,|;)") ) {
+      count_lines = count_lines + 1
+      line <- content[[i]]
+      line <- str_replace_all(line, "\"", "")
+      vector_complete = c(vector_complete, line)
+      setTxtProgressBar(pb, i)
+    }
+  }
+  close(pb)
+
+  if ( count_lines == 0 ) {
+    warning("Load failed: The file does not have correctly format, please check: ", file)
+    correct <- FALSE
+  } else if ( total_lines > count_lines ) {
+    message(total_lines, " vs ", count_lines)
+    warning("The file is not totally correct")
+    warning("It will be save but is possible that you can not read this correctly")
+    warning("If you have any problem please check: ", file)
+    correct <- TRUE
+  } else {
+    message("\nFile is correct!")
+    correct <- TRUE
+  }
+  write.table(vector_complete, file, row.names = FALSE, col.names = FALSE,
+              quote = FALSE, fileEncoding = "UTF-8")
+  correct
+}
