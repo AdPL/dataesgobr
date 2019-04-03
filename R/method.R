@@ -257,3 +257,32 @@ get_symbol <- function(file) {
     symbol <- ","
   }
 }
+
+#' @title Check if the dataset has a correct format
+#'
+#' @param file The file to check
+#' @import httr
+#' @return Return a logical, if the file is correct it will be TRUE, else FALSE
+check_file <- function(file) {
+  if (url.exists(file)) {
+    name <- get_name(file)
+    if (file.exists(name)) {
+      message("The file already exists")
+      result <- check_csv_file(name)
+    } else {
+      message("Downloading file")
+      cap_speed <- progress(type = c("down", "up"), con = stdout())
+      GET(file, write_disk(name, overwrite = TRUE), progress(), cap_speed)
+      result <- check_csv_file(name)
+    }
+  } else {
+    if(file.exists(file)) {
+      message("The file already exists")
+      result <- check_csv_file(file)
+    } else {
+      warning("File not found")
+      result <- FALSE
+    }
+  }
+  result
+}
