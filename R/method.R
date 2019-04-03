@@ -243,3 +243,17 @@ get_name <- function(url) {
   }
   name
 }
+
+#' @title This function detects the delim from a csv file
+#'
+#' @param file The file with the content to check
+#' @import readr
+#' @return The symbol as character that split the columns
+get_symbol <- function(file) {
+  symbol <- read_lines(file, n_max = 1)
+  if (grepl(";", symbol)) {
+    symbol <- ";"
+  } else {
+    symbol <- ","
+  }
+}
