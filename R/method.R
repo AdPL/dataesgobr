@@ -331,3 +331,18 @@ check_csv_file <- function(file) {
               quote = FALSE, fileEncoding = "UTF-8")
   correct
 }
+
+get_formats <- function(data) {
+  list_of_formats <- list()
+
+  for (row in names(data$formats)) {
+    for (format in row) {
+      if(is.element(format, names(list_of_formats))) {
+        list_of_formats[[format]] <- list_of_formats[[format]] + 1
+      } else {
+        list_of_formats[[format]] <- 1
+      }
+    }
+  }
+  list_of_formats
+}
