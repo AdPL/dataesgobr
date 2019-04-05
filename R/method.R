@@ -332,6 +332,19 @@ check_csv_file <- function(file) {
   correct
 }
 
+#' @title Print available formats in the dataset
+#'
+#' @param data A dataesgobr object
+#' @export
+get_available_formats <- function(data) {
+  stopifnot(class(data) == "dataesgobr")
+
+  for (i in 1:length(data$formats_info)) {
+    message(names(data$formats[i]), ": ", unlist(data$formats_info[i]),
+            "\n", data$formats[[i]], "\n")
+  }
+}
+
 get_formats <- function(data) {
   list_of_formats <- list()
 
