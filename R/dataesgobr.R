@@ -3,6 +3,7 @@ dataesgobr <- function(url = "",
                        description = "",
                        formats,
                        format_links,
+                       info,
                        issued,
                        identifier,
                        keywords,
@@ -28,6 +29,7 @@ dataesgobr <- function(url = "",
       issued = issued,
       identifier = identifier,
       formats = format_links,
+      formats_info = info,
       keywords = keywords,
       publisher = publisher,
       spatial = spatial,
@@ -44,9 +46,11 @@ dataesgobr_from_json <- function(json) {
   if ( is.null(nrow(json$distribution)) ) {
     values <- json$distribution[[1]]$format$value
     access <- json$distribution[[1]]$accessURL
+    info <- json$distribution[[1]]$title
   } else {
     values <- json$distribution$format$value
     access <- json$distribution$accessURL
+    info <- json$distribution$title
   }
 
   value <- list(
@@ -54,6 +58,7 @@ dataesgobr_from_json <- function(json) {
     title = as.character(json["title"]),
     description = as.character(json$description[[1]]),
     formats = access,
+    formats_info = info,
     issued = json$issued,
     identifier = json$identifier,
     keywords = json$keyword,
@@ -72,9 +77,11 @@ dataesgobr_from_dataframe <- function(dataframe) {
   if (is.null(nrow(dataframe$distribution))) {
     values <- dataframe$distribution[[1]]$format$value
     access <- dataframe$distribution[[1]]$accessURL
+    info <- dataframe$distribution[[1]]$title
   } else {
     values <- dataframe$distribution$format$value
     access <- dataframe$distribution$accessURL
+    info <- dataframe$distribution$title
   }
 
   value <- list(
@@ -82,6 +89,7 @@ dataesgobr_from_dataframe <- function(dataframe) {
     title = as.character(dataframe["title"]),
     description = as.character(dataframe$description[[1]]),
     formats = access,
+    formats_info = info,
     issued = dataframe$issued,
     identifier = dataframe$identifier,
     keywords = dataframe$keyword,
