@@ -60,23 +60,16 @@ search_by_id <- function(id) {
 #'
 #' @param data A data.frame that will be filtered
 #' @param q A string to match in data.frame data
+#' @import dplyr
+#' @import stringr
 #' @export
 #' @return A data.frame with rows that matches the dataset title
 filter_by_title <- function(data, q) {
-  if (!requireNamespace("stringr", quietly = TRUE)) {
-    stop("Package \"stringr\" needed for this function to work.
-         Please install it.", call. = FALSE)
-    }
-  if (!requireNamespace("dplyr", quietly = TRUE)) {
-    stop("Package \"dplyr\" needed for this function to work.
-         Please install it.", call. = FALSE)
-  }
-
   stopifnot(class(data) == 'data.frame', class(q) == 'character')
 
-  result <- dplyr::filter(data, stringr::str_detect(
-    stringr::str_to_lower(unlist(as.character(data$title))),
-    stringr::str_to_lower(q)))
+  result <- filter(data, str_detect(
+    str_to_lower(unlist(as.character(data$title))),
+    str_to_lower(q)))
 
   nMatches <- nrow(result)
   message("Found ", nMatches, " matches.")
