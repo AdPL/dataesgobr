@@ -43,11 +43,17 @@ search_by_title <- function(title, numentry = 50) {
 #' @export
 #' @return A dataesgobr object
 search_by_id <- function(id) {
+  stopifnot(is.character(id))
+
   search <- paste("https://datos.gob.es/apidata/catalog/dataset/", id, sep = "")
   response <- fromJSON(search)
   datos <- response[["result"]][["items"]]
 
-  dataesgobr_from_json(json = datos)
+  if (length(datos) == 0) {
+    datos <- NULL
+  } else {
+    dataesgobr_from_json(json = datos)
+  }
 }
 
 #' @title Filter data.frame by title using q param
