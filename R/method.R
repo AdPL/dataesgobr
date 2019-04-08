@@ -100,23 +100,20 @@ filter_by_description <- function(data, q) {
 #'
 #' @param data A data.frame that will be filtered
 #' @param keywords A string to match in data.frame data
-#' @export
 #' @import dplyr
+#' @import stringr
+#' @export
 #' @return A data.frame that matches any given keyword
 filter_by_keywords <- function(data, keywords) {
-  if (!requireNamespace("stringr", quietly = TRUE)) {
-    stop("Package \"stringr\" needed for this function to work.
-         Please install it.", call. = FALSE)
-  }
-  if (!requireNamespace("dplyr", quietly = TRUE)) {
-    stop("Package \"dplyr\" needed for this function to work.
-         Please install it.", call. = FALSE)
-  }
-
   stopifnot(class(data) == 'data.frame', class(keywords) == 'character')
-  result <- dplyr::filter(data, stringr::str_detect(
-    stringr::str_to_lower(unlist(as.character(data$keyword))),
-    stringr::str_to_lower(keywords)))
+
+  result <- filter(data, str_detect(
+    str_to_lower(unlist(as.character(data$keyword))),
+    str_to_lower(keywords)))
+
+  nMatches <- nrow(result)
+  message("Found ", nMatches, " matches.")
+  result
 }
 
 #' @title Represent keywords in a plot
