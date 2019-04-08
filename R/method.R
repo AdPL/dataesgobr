@@ -333,10 +333,20 @@ check_csv_file <- function(file) {
 get_available_formats <- function(data) {
   stopifnot(class(data) == "dataesgobr")
 
-  for (i in 1:length(data$formats_info)) {
-    message(names(data$formats[i]), ": ", unlist(data$formats_info[i]),
-            "\n", data$formats[[i]], "\n")
+  formats <- data.frame(stringsAsFactors = FALSE)
+
+  for (i in 1:length(data$formats)) {
+    if(length(unlist(data$formats_info[i])) == 0) {
+      info <- NA
+    } else {
+      info <- unlist(data$formats_info[i])
+    }
+    newFormat <- data.frame(names(data$formats[i]), info, data$formats[[i]])
+    formats <- rbind(formats, newFormat)
+
   }
+  names(formats) <- c("Type", "Info", "url")
+  formats
 }
 
 get_formats <- function(data) {
