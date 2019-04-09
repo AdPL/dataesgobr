@@ -60,11 +60,12 @@ search_by_id <- function(id) {
 #'
 #' @param data A data.frame that will be filtered
 #' @param q A string to match in data.frame data
+#' @param quiet Set if the function can print info messages or not
 #' @import dplyr
 #' @import stringr
 #' @export
 #' @return A data.frame with rows that matches the dataset title
-filter_by_title <- function(data, q) {
+filter_by_title <- function(data, q, quiet = FALSE) {
   stopifnot(class(data) == 'data.frame', class(q) == 'character')
 
   result <- filter(data, str_detect(
@@ -72,7 +73,9 @@ filter_by_title <- function(data, q) {
     str_to_lower(q)))
 
   nMatches <- nrow(result)
-  message("Found ", nMatches, " matches.")
+  if (!quiet) {
+    message("Found ", nMatches, " matches.")
+  }
   result
 }
 
@@ -80,11 +83,12 @@ filter_by_title <- function(data, q) {
 #'
 #' @param data A data.frame that will be filtered
 #' @param q A string to match in data.frame data
+#' @param quiet Set if the function can print info messages or not
 #' @import dplyr
 #' @import stringr
 #' @export
 #' @return A data.frame with rows that matches the description
-filter_by_description <- function(data, q) {
+filter_by_description <- function(data, q, quiet = FALSE) {
   stopifnot(class(data) == 'data.frame', class(q) == 'character')
 
   result <- filter(data, str_detect(
@@ -92,7 +96,9 @@ filter_by_description <- function(data, q) {
     str_to_lower(q)))
 
   nMatches <- nrow(result)
-  message("Found ", nMatches, " matches.")
+  if (!quiet) {
+    message("Found ", nMatches, " matches.")
+  }
   result
 }
 
@@ -100,11 +106,12 @@ filter_by_description <- function(data, q) {
 #'
 #' @param data A data.frame that will be filtered
 #' @param keywords A string to match in data.frame data
+#' @param quiet Set if the function can print info messages or not
 #' @import dplyr
 #' @import stringr
 #' @export
 #' @return A data.frame that matches any given keyword
-filter_by_keywords <- function(data, keywords) {
+filter_by_keywords <- function(data, keywords, quiet = FALSE) {
   stopifnot(class(data) == 'data.frame', class(keywords) == 'character')
 
   result <- filter(data, str_detect(
@@ -112,7 +119,9 @@ filter_by_keywords <- function(data, keywords) {
     str_to_lower(keywords)))
 
   nMatches <- nrow(result)
-  message("Found ", nMatches, " matches.")
+  if (!quiet) {
+    message("Found ", nMatches, " matches.")
+  }
   result
 }
 
