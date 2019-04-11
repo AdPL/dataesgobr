@@ -131,26 +131,30 @@ filter_by_keywords <- function(data, keywords, quiet = FALSE) {
 #' @param title A string to match with the title column in the data.frame
 #' @param description A string to match with the description column in the data.frame
 #' @param keywords A string to match with the keywords column in the data.frame
+#' @param quiet A logical param that set if the function will print info message
+#' in console
 #' @import dplyr
 #' @export
 #' @return A data.frame that matches
 filter_by <- function(data, title = NULL, description = NULL, keywords = NULL,
                       quiet = FALSE) {
   stopifnot(is.data.frame(data))
-  if (!is.null(title)) {
+
+  if (!missing(title)) {
     stopifnot(is.character(title))
     data %>% filter_by_title(title, quiet = TRUE) -> data
   }
-  if (!is.null(description)) {
+  if (!missing(description)) {
     stopifnot(is.character(description))
     data %>% filter_by_description(description, quiet = TRUE) -> data
   }
-  if (!is.null(keywords)) {
+  if (!missing(keywords)) {
     stopifnot(is.character(keywords))
     data %>% filter_by_keywords(keywords, quiet = TRUE) -> data
   }
-  nMatches <- nrow(data)
+
   if (!quiet) {
+    nMatches <- nrow(data)
     message("Found ", nMatches, " matches.")
   }
   data
