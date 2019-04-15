@@ -1,7 +1,8 @@
 library(shiny)
 
-ui <- fluidPage(
-  titlePanel("DataesgobR!"),
+ui <- navbarPage(
+  "DataesgobR",
+  tabPanel("Search"),
   sidebarLayout(
     sidebarPanel(
       textInput(inputId = "title", label = "Title"),
