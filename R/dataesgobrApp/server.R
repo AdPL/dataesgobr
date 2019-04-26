@@ -17,12 +17,16 @@ server <- function(input, output) {
     output$datasetUrl <- renderText(data$url)
     output$datasetPublisher <- renderText(data$publisher)
     output$datasetDescription <- renderText(data$description[[1]])
-    formats <- do.call(rbind,
-                       Map(data.frame,
-                           Format = names(data$formats),
-                           Url = data$formats,
-                           Information = data$formats_info))
-    output$datasetFormats <- renderTable(formats)
+
+    output$datasetFormats <- renderDataTable({
+      formats <- do.call(rbind,
+                         Map(data.frame,
+                             Format = names(data$formats),
+                             Url = paste0("<a href='", data$formats, "'>Descargar</a>"),
+                             Information = data$formats_info))
+      return(formats)
+    }, escape = FALSE)
     output$datasetIssued <- renderText(data$issued)
+
   })
 }

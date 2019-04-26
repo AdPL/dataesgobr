@@ -35,7 +35,7 @@ ui <- fluidPage(
         h3("Description"),
         textOutput("datasetDescription"),
         h3("Distribution"),
-        tableOutput("datasetFormats"),
+        dataTableOutput("datasetFormats"),
         h3("Additional info"),
         textOutput("datasetIssued")
       )
