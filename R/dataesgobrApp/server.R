@@ -1,14 +1,18 @@
+library(dataesgobr)
 library(dplyr)
 
 server <- function(input, output) {
   observeEvent(input$submit, {
-    response <- jsonlite::fromJSON(paste("https://datos.gob.es/apidata/catalog/dataset/title/", input$title ,"?_sort=title&_pageSize=50&_page=0", sep = ""))
-    datasets <- response[["result"]][["items"]]
+    datasets <- search_by_title(input$title)
 
-    output$datasetsTable <- DT::renderDataTable(DT::datatable({
-      data <- datasets %>% select("title", "description", "_about")
-      data
-    }))
+    output$datasetsTable <- renderDataTable({
+      data <- do.call(rbind,
+                      Map(data.frame,
+                          Title = datasets$title,
+                          Description = datasets$description,
+                          About = paste0("<a href='", datasets$`_about`, "' target='_blank'>Open</a>")))
+      return(data)
+    }, escape = FALSE)
   })
 
   observeEvent(input$submitId, {

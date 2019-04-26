@@ -11,7 +11,7 @@ ui <- fluidPage(
       mainPanel(
         fluidRow(
           column(12,
-                 DT::dataTableOutput('datasetsTable')
+                 dataTableOutput('datasetsTable')
           )
         )
       )
