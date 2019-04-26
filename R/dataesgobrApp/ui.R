@@ -6,12 +6,16 @@ ui <- fluidPage(
   sidebarLayout(
     sidebarPanel(
       textInput(inputId = "title", label = "Title"),
-                actionButton("submit", "Search")
+                actionButton("submit", "Search"),
+                hr(),
+                dataTableOutput("cargado"),
+                textOutput("error")
       ),
       mainPanel(
         fluidRow(
           column(12,
-                 dataTableOutput('datasetsTable')
+                 textOutput("estado"),
+                 DT::dataTableOutput("datasetsTable")
           )
         )
       )
