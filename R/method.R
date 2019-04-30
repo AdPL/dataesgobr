@@ -407,3 +407,9 @@ get_formats <- function(data) {
   }
   list_of_formats
 }
+
+get_id <- function(url) {
+  position <- stri_locate_last(url, regex = "/")
+  name <- substr(url, position+1, 10000)
+  name
+}
