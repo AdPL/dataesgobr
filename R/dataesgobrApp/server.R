@@ -3,19 +3,21 @@ library(dplyr)
 
 server <- function(input, output, session) {
   observeEvent(input$datasetsTable_rows_selected, {
-    if (!exists("datasets_preload")) {
-      data <- datasets_downloaded
-    } else {
-      data <- datasets_preload
-    }
+    data <- datasets_downloaded
+
     row <- input$datasetsTable_rows_selected
-    output$estado <- renderText(row)
-    output$cargado <- renderDataTable({
-      data <- do.call(rbind,
-                      Map(data.frame,
-                          Title = datasets_downloaded[row,]["Title"],
-                          About = datasets_downloaded[row,]["About"]))
-      }, escape = FALSE)
+    url <- as.character(dataesgobr:::get_id(data[row,]$Url))
+    dataSelected <- search_by_id(url)
+
+    output$titleSelected <- renderText(dataSelected$title)
+    output$formatsSelected <- renderDataTable({
+      formats <- do.call(rbind,
+                         Map(data.frame,
+                             Format = names(dataSelected$formats),
+                             Url = paste0("<a href='", dataSelected$formats, "'>Descargar</a>"),
+                             Information = dataSelected$formats_info))
+      return(formats)
+    }, escape = FALSE)
     return(data)
   })
 
@@ -27,10 +29,11 @@ server <- function(input, output, session) {
                       Map(data.frame,
                           Title = datasets$title,
                           Description = datasets$description,
-                          About = paste0("<a href='", datasets$`_about`, "' target='_blank'>Open</a>")))
+                          About = paste0("<a href='", datasets$`_about`, "' target='_blank'>Open</a>"),
+                          Url = datasets$`_about`))
       datasets_downloaded <<- data
-      return(data)
-    }, escape = FALSE)
+      return(data[1:4])
+    }, escape = FALSE, selection = "single")
   })
 
   observeEvent(input$submitId, {

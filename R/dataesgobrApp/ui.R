@@ -8,13 +8,13 @@ ui <- fluidPage(
       textInput(inputId = "title", label = "Title"),
                 actionButton("submit", "Search"),
                 hr(),
-                dataTableOutput("cargado"),
+                h4(textOutput("titleSelected")),
+                dataTableOutput("formatsSelected"),
                 textOutput("error")
       ),
       mainPanel(
         fluidRow(
           column(12,
-                 textOutput("estado"),
                  DT::dataTableOutput("datasetsTable")
           )
         )
