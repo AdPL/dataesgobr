@@ -235,7 +235,7 @@ load_dataset <- function(dataframe, row = 1) {
 #' @import httr
 #' @import readr
 #' @return A data.frame containing data from datos.gob.es
-load_data <- function(x) {
+load_data <- function(x, format = "text/csv") {
   if (!requireNamespace("stringr", quietly = TRUE)) {
     stop("Package \"stringr\" needed for this function to work.
          Please install it.", call. = FALSE)
@@ -243,20 +243,40 @@ load_data <- function(x) {
 
   stopifnot(class(x) == 'dataesgobr')
 
-  if (is.na(x$formats['text/csv'])) {
-    message("Error: csv data not found.")
+  if (is.na(x$formats[format])) {
+    message(paste("Error:", format,"format not found."))
+    message("If you need to know the available formats about a dataset you can
+            use get_available_formats function.")
   } else {
-    url <- x$formats['text/csv']
-    name <- get_name(url)
+    cap_speed <- progress(type = c("down", "up"), con = stdout())
+    switch(format,
+           "text/csv" = {
+             url <- x$formats[format]
+             name <- get_name(url)
 
-    if (!file.exists(name)) {
-       cap_speed <- progress(type = c("down", "up"), con = stdout())
-       GET(url, write_disk(name, overwrite = TRUE), progress(), cap_speed)
-    }
+             if (!file.exists(name)) {
+                GET(url, write_disk(name, overwrite = TRUE), progress(), cap_speed)
+             }
 
-    symbol <- get_symbol(name)
-    message("Symbol is ", symbol)
-    read_delim(name, delim = symbol)
+             symbol <- get_symbol(name)
+             read_delim(name, delim = symbol)
+           },
+           "application/pdf" = {
+             position <- 0
+             for(element in names(x$formats)) {
+               position <- position + 1
+               if (format == element) {
+                 url <- x$formats[position]
+                 name <- get_name(url)
+
+                 if (!file.exists(name)) {
+                   GET(url, write_disk(name, overwrite = TRUE),
+                       progress(), cap_speed)
+                 }
+               }
+             }
+           }
+    )
   }
 }
 
