@@ -4,7 +4,8 @@
 #' as data.frame
 #'
 #' @param title Title to search
-#' @param numentry Number of datasets
+#' @param numentry Number of results for page
+#' @param page The number of page to see, the first page is 0
 #'
 #' @examples
 #' library(dataesgobr)
@@ -12,7 +13,7 @@
 #' # Return first 50 matches that contain puente in their title
 #' mydataesgobr <- dataesgobr_search_by_title('puente')
 #'
-#' # Return the first 78 matches that contain puente in their title and
+#' # Return the first 78 matches that contain puente in their title
 #' mydataesgobr <- dataesgobr_search_by_title('puente', 78)
 #'
 #' }
@@ -20,12 +21,12 @@
 #' @import jsonlite
 #' @return A data.frame containing information about datasets that match with
 #' the title param
-search_by_title <- function(title, numentry = 50) {
+search_by_title <- function(title, numentry = 50, page = 0) {
   stopifnot(is.character(title), is.numeric(numentry))
   data <- data.frame()
 
   search <- paste("https://datos.gob.es/apidata/catalog/dataset/title/",
-                  title, "?_page=0&_pageSize=", numentry, sep = "")
+                  title, "?_pageSize=", numentry, "&_page=", page, sep = "")
   response <- fromJSON(search)
 
   data <- response[["result"]][["items"]]
