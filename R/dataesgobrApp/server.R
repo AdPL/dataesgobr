@@ -14,7 +14,8 @@ server <- function(input, output, session) {
       formats <- do.call(rbind,
                          Map(data.frame,
                              Format = names(dataSelected$formats),
-                             Url = paste0("<a href='", dataSelected$formats, "'>Descargar</a>"),
+                             Url = paste0("<a href='", dataSelected$formats,
+                                          "' target='_blank'>Descargar</a>"),
                              Information = dataSelected$formats_info))
       return(formats)
     }, escape = FALSE)
@@ -29,7 +30,8 @@ server <- function(input, output, session) {
                       Map(data.frame,
                           Title = datasets$title,
                           Description = datasets$description,
-                          About = paste0("<a href='", datasets$`_about`, "' target='_blank'>Open</a>"),
+                          About = paste0("<a href='", datasets$`_about`,
+                                         "' target='_blank'>Open</a>"),
                           Url = datasets$`_about`))
       datasets_downloaded <<- data
       return(data[1:4])
