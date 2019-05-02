@@ -226,16 +226,18 @@ load_dataset <- function(dataframe, row = 1) {
   dataesgobr(dataframe = row_to_load)
 }
 
-#' @title Load a dataset asociate with dataesgobr object
+#' @title Download files asociate with dataesgobr object
 #' @description This function downloads the data associated with the dataset
-#' passed like param and downloads from datos.gob.es
+#' passed like param from datos.gob.es
 #'
 #' @param x dataesgobr containing information and data from datos.gob.es
+#' @param format The data's format to download
+#'
 #' @export
 #' @import httr
 #' @import readr
-#' @return A data.frame containing data from datos.gob.es
-load_data <- function(x, format = "text/csv") {
+#' @return
+download_data <- function(x, format) {
   if (!requireNamespace("stringr", quietly = TRUE)) {
     stop("Package \"stringr\" needed for this function to work.
          Please install it.", call. = FALSE)
@@ -245,39 +247,51 @@ load_data <- function(x, format = "text/csv") {
 
   if (is.na(x$formats[format])) {
     message(paste("Error:", format,"format not found."))
-    message("If you need to know the available formats about a dataset you can
-            use get_available_formats function.")
+    message("If you need to know the available formats about a dataset")
+    message("you can use get_available_formats function.")
   } else {
-    cap_speed <- progress(type = c("down", "up"), con = stdout())
     switch(format,
-           "text/csv" = {
-             url <- x$formats[format]
-             name <- get_name(url)
+           "text/csv" = { extension <- ".csv" },
+           "application/pdf" = { extension <- ".pdf" },
+           "application/vnd.ms-excel" = { extension <- ".xls" },
+           "application/json" = { extension <- ".json" })
 
-             if (!file.exists(name)) {
-                GET(url, write_disk(name, overwrite = TRUE), progress(), cap_speed)
-             }
+    cap_speed <- progress(type = c("down", "up"), con = stdout())
+    position <- 0
+    for(element in names(x$formats)) {
+      position <- position + 1
+      if (format == element) {
+        url <- x$formats[position]
+        name <- get_name(url)
 
-             symbol <- get_symbol(name)
-             read_delim(name, delim = symbol)
-           },
-           "application/pdf" = {
-             position <- 0
-             for(element in names(x$formats)) {
-               position <- position + 1
-               if (format == element) {
-                 url <- x$formats[position]
-                 name <- get_name(url)
+        if (is.na(stri_locate_last(url, regex = extension)[[1]])) {
+          name <- paste0(name, extension)
+        }
 
-                 if (!file.exists(name)) {
-                   GET(url, write_disk(name, overwrite = TRUE),
-                       progress(), cap_speed)
-                 }
-               }
-             }
-           }
-    )
+        if (!file.exists(name)) {
+          message(paste("Downloading: ", name))
+          GET(url, write_disk(name, overwrite = TRUE),
+              progress(), cap_speed)
+        }
+      }
+    }
   }
+}
+
+#' @title Load data from a file
+#' @description This function loads the data from the file passed like param
+#'
+#' @param x A file with data previously downloaded
+#' @export
+#' @import httr
+#' @import readr
+#' @return A data.frame
+load_data <- function(file) {
+  if (!requireNamespace("stringr", quietly = TRUE)) {
+    stop("Package \"stringr\" needed for this function to work.
+         Please install it.", call. = FALSE)
+  }
+
 }
 
 #' @title Extract the name of the file in the URL
