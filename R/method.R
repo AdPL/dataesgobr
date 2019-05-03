@@ -250,11 +250,7 @@ download_data <- function(x, format) {
     message("If you need to know the available formats about a dataset")
     message("you can use get_available_formats function.")
   } else {
-    switch(format,
-           "text/csv" = { extension <- ".csv" },
-           "application/pdf" = { extension <- ".pdf" },
-           "application/vnd.ms-excel" = { extension <- ".xls" },
-           "application/json" = { extension <- ".json" })
+    extension <- get_extension(format)
 
     cap_speed <- progress(type = c("down", "up"), con = stdout())
     position <- 0
@@ -262,11 +258,8 @@ download_data <- function(x, format) {
       position <- position + 1
       if (format == element) {
         url <- x$formats[position]
-        name <- get_name(url)
-
-        if (is.na(stri_locate_last(url, regex = extension)[[1]])) {
-          name <- paste0(name, extension)
-        }
+        name <- get_name(url, format)
+        name <- paste0(position, name)
 
         if (!file.exists(name)) {
           message(paste("Downloading: ", name))
