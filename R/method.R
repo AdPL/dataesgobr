@@ -317,6 +317,15 @@ get_name <- function(url) {
   name
 }
 
+get_extension <- function(format) {
+  switch(format,
+         "text/csv" = { extension <- ".csv" },
+         "application/pdf" = { extension <- ".pdf" },
+         "application/vnd.ms-excel" = { extension <- ".xls" },
+         "application/json" = { extension <- ".json" })
+  extension
+}
+
 #' @title This function detects the delim from a csv file
 #'
 #' @param file The file with the content to check
