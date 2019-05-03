@@ -9,6 +9,10 @@ server <- function(input, output, session) {
     url <- as.character(dataesgobr:::get_id(data[row,]$Url))
     dataSelected <- search_by_id(url)
 
+    if (is.null(dataSelected$formats_info)) {
+      dataSelected$formats_info <- "No info"
+    }
+
     output$titleSelected <- renderText(dataSelected$title)
     output$formatsSelected <- renderDataTable({
       formats <- do.call(rbind,
@@ -23,19 +27,25 @@ server <- function(input, output, session) {
   })
 
   observeEvent(input$submit, {
-    output$datasetsTable <- DT::renderDT({
-      datasets <- search_by_title(input$title)
+    datasets <- search_by_title(input$title)
+    if (length(datasets) == 0) {
+      output$searchState <- renderText("0 matches found.")
+      output$datasetsTable <- DT::renderDT({})
+    } else {
+      output$searchState <- renderText("")
+      output$datasetsTable <- DT::renderDT({
 
-      data <- do.call(rbind,
-                      Map(data.frame,
-                          Title = datasets$title,
-                          Description = datasets$description,
-                          About = paste0("<a href='", datasets$`_about`,
-                                         "' target='_blank'>Open</a>"),
-                          Url = datasets$`_about`))
-      datasets_downloaded <<- data
-      return(data[1:4])
-    }, escape = FALSE, selection = "single")
+        data <- do.call(rbind,
+                        Map(data.frame,
+                            Title = datasets$title,
+                            Description = datasets$description,
+                            About = paste0("<a href='", datasets$`_about`,
+                                           "' target='_blank'>Open</a>"),
+                            Url = datasets$`_about`))
+        datasets_downloaded <<- data
+        return(data[1:4])
+      }, escape = FALSE, selection = "single")
+    }
   })
 
   observeEvent(input$submitId, {

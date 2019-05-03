@@ -15,6 +15,7 @@ ui <- fluidPage(
       mainPanel(
         fluidRow(
           column(12,
+                 textOutput("searchState"),
                  DT::dataTableOutput("datasetsTable")
           )
         )
