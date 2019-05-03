@@ -317,6 +317,18 @@ get_name <- function(url) {
   name
 }
 
+get_format <- function(file) {
+  position <- stri_locate_last(file, regex = "\\.")
+  extension <- substr(file, position, 10000)
+
+  switch(extension,
+         ".csv" = { format <- "text/csv" },
+         ".pdf" = { format <- "application/pdf" },
+         ".xls" = { format <- "application/vnd.ms-excel" },
+         ".json" = { format <- "application/json" })
+  format
+}
+
 get_extension <- function(format) {
   switch(format,
          "text/csv" = { extension <- ".csv" },
