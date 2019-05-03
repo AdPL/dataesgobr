@@ -297,10 +297,11 @@ load_data <- function(file) {
 #' @title Extract the name of the file in the URL
 #'
 #' @param url A string with URL and the name of the file
+#' @param format The data's format to check the extension
 #' @import stringr
 #' @import stringi
 #' @return A string with the file's name
-get_name <- function(url) {
+get_name <- function(url, format) {
   position <- stri_locate_last(url, regex = "/")
 
   if (is.na(position)[1]) {
@@ -309,10 +310,14 @@ get_name <- function(url) {
     name <- substr(url, position+1, 10000)
   }
 
-  if (str_detect(name, ".csv$")) {
+  extension <- get_extension(format)
+
+  if (str_detect(name, paste0("\\", extension,"$"))) {
     message("Extension detected")
-  } else if (str_detect(name, ".csv")) {
+  } else if (str_detect(name, extension)) {
     name <- substr(name, 1, str_locate(name, ".csv")[1,]["end"])
+  } else {
+    name <- paste0(name, extension)
   }
   name
 }
