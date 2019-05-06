@@ -15,8 +15,10 @@ ui <- fluidPage(
       mainPanel(
         fluidRow(
           column(12,
-                 textOutput("searchState"),
-                 DT::dataTableOutput("datasetsTable")
+                 wellPanel(
+                  textOutput("searchState"),
+                  DT::dataTableOutput("datasetsTable")
+                 )
           )
         )
       )
@@ -33,6 +35,7 @@ ui <- fluidPage(
      column(9,
       wellPanel(
         h1(textOutput("datasetTitle")),
+        actionButton("sendToWork", "Load in work view"),
         h5(textOutput("datasetUrl")),
         strong("Publisher:"),
         span(textOutput("datasetPublisher")),
@@ -46,6 +49,22 @@ ui <- fluidPage(
       )
      )
     )
-   )
+   ),
+  tabPanel("Work",
+     fluidRow(
+       column(3,
+              wellPanel(
+                h1(textOutput("datasetLoadTitle")),
+                dataTableOutput("datasetLoadFormats")
+              )
+       ),
+       column(9,
+              wellPanel(
+                downloadLink("loadCSV", "Load CSV"),
+                dataTableOutput("dataTable")
+              )
+       )
+     )
+    )
   )
 )
