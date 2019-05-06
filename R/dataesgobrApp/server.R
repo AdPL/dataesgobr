@@ -49,7 +49,7 @@ server <- function(input, output, session) {
   })
 
   observeEvent(input$submitId, {
-    data <- search_by_id(input$url)
+    data_preload <<- data <- search_by_id(input$url)
     output$datasetTitle <- renderText(data$title)
     output$datasetUrl <- renderText(data$url)
     output$datasetPublisher <- renderText(data$publisher)
@@ -65,4 +65,21 @@ server <- function(input, output, session) {
     }, escape = FALSE)
     output$datasetIssued <- renderText(data$issued)
   })
+
+  observeEvent(input$sendToWork, {
+    output$datasetLoadTitle <- renderText(data_preload$title)
+    output$datasetLoadFormats <- renderDataTable({
+      formats <- do.call(rbind,
+                         Map(data.frame,
+                             Format = names(data_preload$formats),
+                             Url = paste0("<a href='", data_preload$formats, "'>Load data</a>"),
+                             Information = data_preload$formats_info))
+      return(formats)
+    }, escape = FALSE)
+  })
+
+  output$loadCSV <- downloadHandler(
+    content <<- load_data(data_preload),
+    output$dataTable <- renderDataTable(content)
+  )
 }
