@@ -10,19 +10,6 @@ server <- function(input, output, session) {
     buttons
   }
 
-  observeEvent(input$datasetsTable_rows_selected, {
-    data <- datasets_downloaded
-
-    row <- input$datasetsTable_rows_selected
-    url <- as.character(dataesgobr:::get_id(data[row,]$Url))
-    data_preload <<- dataSelected <- search_by_id(url)
-
-
-
-    addClass("formatsSelected", "table-responsive")
-    return(data)
-  })
-
   observeEvent(input$submit, {
     datasets <- search_by_title(input$title)
     if (length(datasets) == 0) {
@@ -46,7 +33,7 @@ server <- function(input, output, session) {
                             Url = datasets$`_about`))
         datasets_downloaded <<- data
         return(data[2:5])
-      }, escape = FALSE, selection = "single")
+      }, escape = FALSE, selection = "none")
       addClass("datasetsTable", "table-responsive")
     }
   })
@@ -71,11 +58,28 @@ server <- function(input, output, session) {
                              Format = names(data_preload$formats),
                              Url = paste0("<a href='", data_preload$formats,
                                           "' target='_blank'>Descargar</a>"),
+                             Actions = generateButton(actionButton,
+                                                      length(data_preload$formats),
+                                                      'button_',
+                                                      label = "Load data",
+                                                      onclick = 'Shiny.onInputChange(\"load_data\", this.id)'),
                              Information = data_preload$formats_info))
       return(formats)
-    }, escape = FALSE)
+    }, escape = FALSE, selection = "none")
+
     addClass("datasetFormatsSelected", "table-responsive")
     updateTabsetPanel(session, "tabs", "Work")
+  })
 
+  observeEvent(input$load_data, {
+    dataSelected <- as.numeric(strsplit(input$load_data, "_")[[1]][2])
+    output$dataSelected <- renderText(paste("url a cargar:", as.character(data_preload$formats[dataSelected][1])))
+
+    showNotification(paste("Loading data, please wait..."), type = "warning", duration = 4)
+
+    content <<- load_data(data_preload)
+    output$dataTable <- DT::renderDataTable(content)
+
+    addClass("dataTable", "table-responsive")
   })
 }

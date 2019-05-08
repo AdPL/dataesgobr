@@ -41,6 +41,14 @@ ui <- bootstrapPage(theme = shinytheme("paper"),
                             DT::dataTableOutput("datasetFormatsSelected")
                            )
                         )
+                      ),
+                      fluidRow(
+                        column(12,
+                          wellPanel(
+                            textOutput("dataSelected"),
+                            DT::dataTableOutput("dataTable")
+                          )
+                        )
                       )
             )
   )
