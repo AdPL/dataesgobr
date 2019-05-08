@@ -294,6 +294,21 @@ load_data <- function(file) {
          Please install it.", call. = FALSE)
   }
 
+  cap_speed <- progress(type = c("down", "up"), con = stdout())
+
+  format <- get_format(file)
+  name <- get_name(file, format)
+
+  switch (format,
+    "text/csv" = {
+      message("Loading csv file.")
+      check_csv_file(name)
+
+      symbol <- get_symbol(name)
+      content <- read_delim(name, delim = symbol)
+    }
+  )
+  content
 }
 
 #' @title Extract the name of the file in the URL
