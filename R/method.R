@@ -237,7 +237,7 @@ load_dataset <- function(dataframe, row = 1) {
 #' @import httr
 #' @import readr
 #' @return
-download_data <- function(x, format) {
+download_data <- function(x, format, all = TRUE, position = 0) {
   if (!requireNamespace("stringr", quietly = TRUE)) {
     stop("Package \"stringr\" needed for this function to work.
          Please install it.", call. = FALSE)
@@ -251,21 +251,30 @@ download_data <- function(x, format) {
     message("you can use get_available_formats function.")
   } else {
     extension <- get_extension(format)
-
     cap_speed <- progress(type = c("down", "up"), con = stdout())
-    position <- 0
-    for(element in names(x$formats)) {
-      position <- position + 1
-      if (format == element) {
-        url <- x$formats[position]
-        name <- get_name(url, format)
-        name <- paste0(position, name)
+    if (all) {
+      position <- 0
+      for(element in names(x$formats)) {
+        position <- position + 1
+        if (format == element) {
+          url <- x$formats[position]
+          name <- get_name(url, format)
 
-        if (!file.exists(name)) {
-          message(paste("Downloading: ", name))
-          GET(url, write_disk(name, overwrite = TRUE),
-              progress(), cap_speed)
+          if (!file.exists(name)) {
+            message(paste("Downloading: ", name))
+            GET(url, write_disk(name, overwrite = TRUE),
+                progress(), cap_speed)
+          }
         }
+      }
+    } else {
+      url <- x$formats[position]
+      name <- get_name(url, format)
+
+      if (!file.exists(name)) {
+        message(paste("Downloading: ", name))
+        GET(url, write_disk(name, overwrite = TRUE),
+            progress(), cap_speed)
       }
     }
   }
