@@ -2,6 +2,7 @@ library(dataesgobr)
 library(dplyr)
 
 server <- function(input, output, session) {
+  output$datasetsTable <- DT::renderDataTable({})
   generateButton <- function(FUN, len, id, ...) {
     buttons <- character(len)
     for (i in seq_len(len)) {
@@ -47,6 +48,7 @@ server <- function(input, output, session) {
     output$datasetTitleSelected <- renderText(data_preload$title)
     output$datasetDescriptionSelected <- renderText(data_preload$description)
     output$datasetPublisherSelected <- renderText(paste("Publisher: ", data_preload$publisher))
+    output$dataTable <- DT::renderDataTable({})
 
     if (is.null(data_preload$formats_info)) {
       data_preload$formats_info <- "No info"
@@ -78,6 +80,7 @@ server <- function(input, output, session) {
 
     showNotification(paste("Loading data, please wait..."), type = "warning", duration = 4)
 
+    output$dataTable <- DT::renderDataTable({})
     format <- dataesgobr:::get_format(fileSelected)
     download_data(data_preload, format, FALSE, dataSelected)
     content <<- load_data(fileSelected)

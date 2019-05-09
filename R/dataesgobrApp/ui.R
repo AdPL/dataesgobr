@@ -1,5 +1,6 @@
 library(shiny)
 library(shinythemes)
+library(shinycssloaders)
 library(shinyjs)
 
 ui <- bootstrapPage(theme = shinytheme("paper"),
@@ -22,6 +23,7 @@ ui <- bootstrapPage(theme = shinytheme("paper"),
                                wellPanel(
                                  textOutput("searchState"),
                                  DT::dataTableOutput("datasetsTable")
+                                  %>% withSpinner(color = "#0dc5c1")
                                )
                         )
                       )
@@ -46,7 +48,8 @@ ui <- bootstrapPage(theme = shinytheme("paper"),
                         column(12,
                           wellPanel(
                             textOutput("dataSelected"),
-                            DT::dataTableOutput("dataTable")
+                            DT::dataTableOutput("dataTable") %>%
+                              withSpinner(color = "#0dc5c1")
                           )
                         )
                       )
