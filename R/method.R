@@ -306,6 +306,10 @@ load_data <- function(file) {
 
       symbol <- get_symbol(name)
       content <- read_delim(name, delim = symbol)
+    },
+    "application/vnd.ms-excel" = {
+      message("Loading xls file.")
+      content <- as.data.frame(readxl::read_excel(name))
     }
   )
   content
