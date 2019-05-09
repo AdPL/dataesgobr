@@ -64,7 +64,7 @@ server <- function(input, output, session) {
                                                       label = "Load data",
                                                       onclick = 'Shiny.onInputChange(\"load_data\", this.id)'),
                              Information = data_preload$formats_info))
-      return(formats)
+      return(formats[2:4])
     }, escape = FALSE, selection = "none")
 
     addClass("datasetFormatsSelected", "table-responsive")
@@ -73,11 +73,14 @@ server <- function(input, output, session) {
 
   observeEvent(input$load_data, {
     dataSelected <- as.numeric(strsplit(input$load_data, "_")[[1]][2])
-    output$dataSelected <- renderText(paste("url a cargar:", as.character(data_preload$formats[dataSelected][1])))
+    fileSelected <- as.character(data_preload$formats[dataSelected][1])
+    output$dataSelected <- renderText(paste("url a cargar:", fileSelected))
 
     showNotification(paste("Loading data, please wait..."), type = "warning", duration = 4)
 
-    content <<- load_data(data_preload)
+    format <- dataesgobr:::get_format(fileSelected)
+    download_data(data_preload, format, FALSE, dataSelected)
+    content <<- load_data(fileSelected)
     output$dataTable <- DT::renderDataTable(content)
 
     addClass("dataTable", "table-responsive")
