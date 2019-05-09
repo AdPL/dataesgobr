@@ -310,6 +310,10 @@ load_data <- function(file) {
     "application/vnd.ms-excel" = {
       message("Loading xls file.")
       content <- as.data.frame(readxl::read_excel(name))
+    },
+    "application/vnd.oasis.opendocument.spreadsheet" = {
+      message("Loading ods file.")
+      content <- readODS::read_ods(name)
     }
   )
   content
@@ -351,7 +355,8 @@ get_format <- function(file) {
          ".csv" = { format <- "text/csv" },
          ".pdf" = { format <- "application/pdf" },
          ".xls" = { format <- "application/vnd.ms-excel" },
-         ".json" = { format <- "application/json" })
+         ".json" = { format <- "application/json" },
+         ".ods" = { format <- "application/vnd.oasis.opendocument.spreadsheet"})
   format
 }
 
@@ -360,7 +365,8 @@ get_extension <- function(format) {
          "text/csv" = { extension <- ".csv" },
          "application/pdf" = { extension <- ".pdf" },
          "application/vnd.ms-excel" = { extension <- ".xls" },
-         "application/json" = { extension <- ".json" })
+         "application/json" = { extension <- ".json" },
+         "application/vnd.oasis.opendocument.spreadsheet" = { extension <- ".ods"})
   extension
 }
 
