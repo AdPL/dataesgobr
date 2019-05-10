@@ -2,19 +2,20 @@ library(shiny)
 library(shinythemes)
 library(shinycssloaders)
 library(shinyjs)
+library(dplyr)
 
 ui <- bootstrapPage(theme = shinytheme("paper"),
   useShinyjs(),
   navbarPage("DataesgobR!", id = "tabs",
              tabPanel("Main",
                       wellPanel(
+                          textOutput("state"),
                           tabsetPanel(
                             tabPanel("Search by title",
                                   textInput(inputId = "title", label = "",
                                             placeholder = "Title"),
-                                  actionButton("submit", "Search"),
-                                  textOutput("error"),
-                                  textOutput("selected")
+                                  actionButton("submit", "Search")
+
                            )
                          )
                       ),

@@ -47,7 +47,7 @@ server <- function(input, output, session) {
 
     output$datasetTitleSelected <- renderText(data_preload$title)
     output$datasetDescriptionSelected <- renderText(data_preload$description)
-    output$datasetPublisherSelected <- renderText(paste("Publisher: ", data_preload$publisher))
+    output$datasetPublisherSelected <- renderText(paste("Publisher: ", get_publisher(get_id(data_preload$publisher))))
     output$dataTable <- DT::renderDataTable({})
 
     if (is.null(data_preload$formats_info)) {
