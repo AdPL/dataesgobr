@@ -370,6 +370,23 @@ get_extension <- function(format) {
   extension
 }
 
+#' @title Get the publisher of the dataset
+#'
+#' @param id A string with the dataset's ID
+#' @export
+#' @import dplyr
+#' @return A string that contains the publisher's name
+get_publisher <- function(id) {
+  stopifnot(is.character(id))
+  data <- data.frame()
+
+  search <- paste0("https://datos.gob.es/apidata/catalog/publisher?_sort=notation&_pageSize=200&_page=0")
+  response <- fromJSON(search)
+  data <- response[["result"]][["items"]]
+  result <- data %>% filter(notation == id)
+  result$prefLabel
+}
+
 #' @title This function detects the delim from a csv file
 #'
 #' @param file The file with the content to check
