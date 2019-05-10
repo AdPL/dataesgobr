@@ -236,7 +236,6 @@ load_dataset <- function(dataframe, row = 1) {
 #' @export
 #' @import httr
 #' @import readr
-#' @return
 download_data <- function(x, format, all = TRUE, position = 0) {
   if (!requireNamespace("stringr", quietly = TRUE)) {
     stop("Package \"stringr\" needed for this function to work.
@@ -323,6 +322,7 @@ load_data <- function(file) {
 #'
 #' @param url A string with URL and the name of the file
 #' @param format The data's format to check the extension
+#' @export
 #' @import stringr
 #' @import stringi
 #' @return A string with the file's name
@@ -387,6 +387,7 @@ get_symbol <- function(file) {
 #' @title Check if the dataset has a correct format
 #'
 #' @param file The file to check
+#' @export
 #' @import httr
 #' @return Return a logical, if the file is correct it will be TRUE, else FALSE
 check_file <- function(file) {
@@ -458,10 +459,10 @@ check_csv_file <- function(file) {
   correct
 }
 
-#' @title Print available formats in the dataset
-#'
-#' @param data A dataesgobr object
+#' @title Generate a data.frame that contains the type of elements, information and repetitions for each one
 #' @export
+#' @param data A dataesgobr object
+#' @return A data.frame
 get_available_formats <- function(data) {
   stopifnot(class(data) == "dataesgobr")
 
@@ -481,6 +482,10 @@ get_available_formats <- function(data) {
   formats
 }
 
+#' @title Generate a list that contains the type of elements and repetitions for each one
+#' @export
+#' @param data A dataesgobr object
+#' @return A list
 get_formats <- function(data) {
   list_of_formats <- list()
 
@@ -496,6 +501,11 @@ get_formats <- function(data) {
   list_of_formats
 }
 
+#' @title This method extracts the ID from an URL
+#' @export
+#' @param url A string
+#' @import stringi
+#' @return A string that contains the ID
 get_id <- function(url) {
   position <- stri_locate_last(url, regex = "/")
   name <- substr(url, position+1, 10000)

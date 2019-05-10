@@ -2,18 +2,20 @@
 % Please edit documentation in R/method.R
 \name{filter_by_keywords}
 \alias{filter_by_keywords}
-\title{Filter data.frame by title using q parameter}
+\title{Filter data.frame by keywords using keywords param}
 \usage{
-filter_by_keywords(data, keywords)
+filter_by_keywords(data, keywords, quiet = FALSE)
 }
 \arguments{
-\item{data}{A data.frame that will be filter}
+\item{data}{A data.frame that will be filtered}
 
-\item{keywords}{A string to mach in data.frame data}
+\item{keywords}{A string to match in data.frame data}
+
+\item{quiet}{Set if the function can print info messages or not}
 }
 \value{
-A data.frame that match some keyword
+A data.frame that matches any given keyword
 }
 \description{
-Filter data.frame by title using q parameter
+Filter data.frame by keywords using keywords param
 }

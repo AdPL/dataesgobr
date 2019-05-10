@@ -2,17 +2,16 @@
 % Please edit documentation in R/method.R
 \name{load_data}
 \alias{load_data}
-\title{Load a dataset asociate dataesgobr object}
+\title{Load data from a file}
 \usage{
-load_data(x)
+load_data(file)
 }
 \arguments{
-\item{x}{dataesgobr containing information and data from datos.gob.es}
+\item{x}{A file with data previously downloaded}
 }
 \value{
-A data.frame containing data from datos.gob.es
+A data.frame
 }
 \description{
-This function download the data associate to dataset passed like
-param and download from datos.gob.es
+This function loads the data from the file passed like param
 }

@@ -2,18 +2,20 @@
 % Please edit documentation in R/method.R
 \name{filter_by_description}
 \alias{filter_by_description}
-\title{Filter data.frame by description using q parameter}
+\title{Filter data.frame by description using q param}
 \usage{
-filter_by_description(data, q)
+filter_by_description(data, q, quiet = FALSE)
 }
 \arguments{
-\item{data}{A data.frame that will be filter}
+\item{data}{A data.frame that will be filtered}
 
-\item{q}{A string to mach in data.frame data}
+\item{q}{A string to match in data.frame data}
+
+\item{quiet}{Set if the function can print info messages or not}
 }
 \value{
-A data.frame with rows that match the description
+A data.frame with rows that matches the description
 }
 \description{
-Filter data.frame by description using q parameter
+Filter data.frame by description using q param
 }

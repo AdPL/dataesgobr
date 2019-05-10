@@ -2,7 +2,8 @@
 % Please edit documentation in R/method.R
 \name{search_by_id}
 \alias{search_by_id}
-\title{Creates an object representing a dataesgobr object searching by id}
+\title{Creates an object of the class dataesgobr that matches with the
+dataset id}
 \usage{
 search_by_id(id)
 }
@@ -13,7 +14,8 @@ search_by_id(id)
 A dataesgobr object
 }
 \description{
-Creates an object representing a dataesgobr object searching by id
+Creates an object of the class dataesgobr that matches with the
+dataset id
 }
 \examples{
 library(dataesgobr)

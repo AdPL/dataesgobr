@@ -2,18 +2,20 @@
 % Please edit documentation in R/method.R
 \name{filter_by_title}
 \alias{filter_by_title}
-\title{Filter data.frame by title using q parameter}
+\title{Filter data.frame by title using q param}
 \usage{
-filter_by_title(data, q)
+filter_by_title(data, q, quiet = FALSE)
 }
 \arguments{
-\item{data}{A data.frame that will be filter}
+\item{data}{A data.frame that will be filtered}
 
-\item{q}{A string to mach in data.frame data}
+\item{q}{A string to match in data.frame data}
+
+\item{quiet}{Set if the function can print info messages or not}
 }
 \value{
-A data.frame with rows that match the title
+A data.frame with rows that matches the dataset title
 }
 \description{
-Filter data.frame by title using q parameter
+Filter data.frame by title using q param
 }

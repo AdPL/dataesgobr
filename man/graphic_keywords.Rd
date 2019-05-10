@@ -2,17 +2,17 @@
 % Please edit documentation in R/method.R
 \name{graphic_keywords}
 \alias{graphic_keywords}
-\title{Represent keywords in a graphic}
+\title{Represent keywords in a plot}
 \usage{
 graphic_keywords(list, type = "circular", nrepeats = 0)
 }
 \arguments{
 \item{list}{List with keywords}
 
-\item{type}{Visual representation of graphic}
+\item{type}{Visual representation of the plot}
 
-\item{nrepeats}{Minimun number of ocurrences to draw in the graphic}
+\item{nrepeats}{Minimun number of ocurrences to draw in the plot}
 }
 \description{
-Represent keywords in a graphic
+Represent keywords in a plot
 }

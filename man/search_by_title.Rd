@@ -4,20 +4,22 @@
 \alias{search_by_title}
 \title{Creates a data.frame containing datasets from datos.gob.es}
 \usage{
-search_by_title(title, numentry = 50)
+search_by_title(title, numentry = 50, page = 0)
 }
 \arguments{
 \item{title}{Title to search}
 
-\item{numentry}{Numbers of datasets}
+\item{numentry}{Number of results for page}
+
+\item{page}{The number of page to see, the first page is 0}
 }
 \value{
 A data.frame containing information about datasets that match with
-title param
+the title param
 }
 \description{
-Send a request to datos.gob.es using title variable
-to search datasets that match with the title, then the results are return
+Send a request to datos.gob.es using the title param
+to search datasets that match with the title, then the results are returned
 as data.frame
 }
 \examples{
@@ -26,7 +28,7 @@ library(dataesgobr)
 # Return first 50 matches that contain puente in their title
 mydataesgobr <- dataesgobr_search_by_title('puente')
 
-# Return the first 78 matches that contain puente in their title and
+# Return the first 78 matches that contain puente in their title
 mydataesgobr <- dataesgobr_search_by_title('puente', 78)
 
 }
