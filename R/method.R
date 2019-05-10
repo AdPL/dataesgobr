@@ -306,7 +306,7 @@ load_data <- function(file) {
       symbol <- get_symbol(name)
       content <- read_delim(name, delim = symbol)
     },
-    "application/vnd.ms-excel" = {
+    "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" = {
       message("Loading xls file.")
       content <- as.data.frame(readxl::read_excel(name))
     },
@@ -356,7 +356,8 @@ get_format <- function(file) {
          ".pdf" = { format <- "application/pdf" },
          ".xls" = { format <- "application/vnd.ms-excel" },
          ".json" = { format <- "application/json" },
-         ".ods" = { format <- "application/vnd.oasis.opendocument.spreadsheet"})
+         ".ods" = { format <- "application/vnd.oasis.opendocument.spreadsheet"},
+         ".xlsx" = { format <- "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"})
   format
 }
 
@@ -366,7 +367,8 @@ get_extension <- function(format) {
          "application/pdf" = { extension <- ".pdf" },
          "application/vnd.ms-excel" = { extension <- ".xls" },
          "application/json" = { extension <- ".json" },
-         "application/vnd.oasis.opendocument.spreadsheet" = { extension <- ".ods"})
+         "application/vnd.oasis.opendocument.spreadsheet" = { extension <- ".ods"},
+         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" = { extension <- ".xlsx"})
   extension
 }
 
