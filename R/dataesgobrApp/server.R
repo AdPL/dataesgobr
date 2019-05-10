@@ -46,8 +46,11 @@ server <- function(input, output, session) {
     showNotification(paste("Dataset loaded"), type = "message", duration = 4)
 
     output$datasetTitleSelected <- renderText(data_preload$title)
+    output$datasetUrlSelected <- renderUI(tagList(a("Look in datos.gob.es", href = data_preload$url, target = "_blank")))
     output$datasetDescriptionSelected <- renderText(data_preload$description)
     output$datasetPublisherSelected <- renderText(paste("Publisher: ", get_publisher(get_id(data_preload$publisher))))
+    output$datasetIssuedSelected <- renderText(paste("Issued: ", data_preload$issued))
+    output$datasetKeywordsSelected <- renderText(unlist(data_preload$keywords))
     output$dataTable <- DT::renderDataTable({})
 
     if (is.null(data_preload$formats_info)) {
@@ -67,7 +70,7 @@ server <- function(input, output, session) {
                                                       onclick = 'Shiny.onInputChange(\"load_data\", this.id)'),
                              Information = data_preload$formats_info))
       return(formats[2:4])
-    }, escape = FALSE, selection = "none")
+    }, escape = FALSE, selection = "none", options = list(pageLength = 5))
 
     addClass("datasetFormatsSelected", "table-responsive")
     updateTabsetPanel(session, "tabs", "Work")

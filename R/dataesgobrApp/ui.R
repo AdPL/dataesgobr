@@ -33,9 +33,14 @@ ui <- bootstrapPage(theme = shinytheme("paper"),
                       fluidRow(
                         column(6,
                           wellPanel(
-                            h5(textOutput("datasetTitleSelected")),
+                            h4(textOutput("datasetTitleSelected")),
+                            span(htmlOutput("datasetUrlSelected")),
+                            h5("Description"),
                             p(textOutput("datasetDescriptionSelected")),
-                            p(textOutput("datasetPublisherSelected"))
+                            p(textOutput("datasetPublisherSelected")),
+                            h5("Additional info"),
+                            p(textOutput("datasetIssuedSelected")),
+                            p(textOutput("datasetKeywordsSelected"))
                           )
                         ),
                         column(6,
@@ -50,7 +55,8 @@ ui <- bootstrapPage(theme = shinytheme("paper"),
                           wellPanel(
                             textOutput("dataSelected"),
                             DT::dataTableOutput("dataTable") %>%
-                              withSpinner(color = "#0dc5c1")
+                              withSpinner(color = "#0dc5c1"),
+                              uiOutput("pdfViewer")
                           )
                         )
                       )
