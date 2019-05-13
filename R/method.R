@@ -232,6 +232,8 @@ load_dataset <- function(dataframe, row = 1) {
 #'
 #' @param x dataesgobr containing information and data from datos.gob.es
 #' @param format The data's format to download
+#' @param all This parameter indicates if the function must download every file
+#' @param position The number in the format list
 #'
 #' @export
 #' @import httr
@@ -282,7 +284,7 @@ download_data <- function(x, format, all = TRUE, position = 0) {
 #' @title Load data from a file
 #' @description This function loads the data from the file passed like param
 #'
-#' @param x A file with data previously downloaded
+#' @param file A file with data previously downloaded
 #' @export
 #' @import httr
 #' @import readr
@@ -389,7 +391,7 @@ get_publisher <- function(id = "") {
   if (id == "") {
     data
   } else {
-    result <- data %>% filter(notation == id)
+    result <- data %>% filter(data["notation"] == id)
     result
   }
 }
@@ -415,25 +417,12 @@ get_symbol <- function(file) {
 #' @import httr
 #' @return Return a logical, if the file is correct it will be TRUE, else FALSE
 check_file <- function(file) {
-  if (url.exists(file)) {
-    name <- get_name(file)
-    if (file.exists(name)) {
-      message("The file already exists")
-      result <- check_csv_file(name)
-    } else {
-      message("Downloading file")
-      cap_speed <- progress(type = c("down", "up"), con = stdout())
-      GET(file, write_disk(name, overwrite = TRUE), progress(), cap_speed)
-      result <- check_csv_file(name)
-    }
+  if(file.exists(file)) {
+    message("The file already exists")
+    result <- check_csv_file(file)
   } else {
-    if(file.exists(file)) {
-      message("The file already exists")
-      result <- check_csv_file(file)
-    } else {
-      warning("File not found")
-      result <- FALSE
-    }
+    warning("File not found")
+    result <- FALSE
   }
   result
 }

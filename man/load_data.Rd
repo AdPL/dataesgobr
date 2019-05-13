@@ -7,7 +7,7 @@
 load_data(file)
 }
 \arguments{
-\item{x}{A file with data previously downloaded}
+\item{file}{A file with data previously downloaded}
 }
 \value{
 A data.frame

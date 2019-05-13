@@ -10,6 +10,10 @@ download_data(x, format, all = TRUE, position = 0)
 \item{x}{dataesgobr containing information and data from datos.gob.es}
 
 \item{format}{The data's format to download}
+
+\item{all}{This parameter indicates if the function must download every file}
+
+\item{position}{The number in the format list}
 }
 \description{
 This function downloads the data associated with the dataset

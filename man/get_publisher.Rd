@@ -4,7 +4,7 @@
 \alias{get_publisher}
 \title{Get the publisher of the dataset}
 \usage{
-get_publisher(id)
+get_publisher(id = "")
 }
 \arguments{
 \item{id}{A string with the dataset's ID}
