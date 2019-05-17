@@ -423,9 +423,17 @@ get_symbol <- function(file) {
 #' @import httr
 #' @return Return a logical, if the file is correct it will be TRUE, else FALSE
 check_file <- function(file) {
+  result <- FALSE
   if(file.exists(file)) {
-    message("The file already exists")
-    result <- check_csv_file(file)
+    format <- get_format(file)
+    switch(format,
+           "text/csv" = {
+             result <- check_csv_file(file)
+           }
+    )
+    if (!result) {
+      message("Format not supported yet.")
+    }
   } else {
     warning("File not found")
     result <- FALSE
