@@ -308,7 +308,11 @@ load_data <- function(file) {
       symbol <- get_symbol(name)
       content <- read_delim(name, delim = symbol)
     },
-    "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" = {
+    "application/vnd.ms-excel" = {
+      message("Loading xls file.")
+      content <- as.data.frame(readxl::read_excel(name))
+    },
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" = {
       message("Loading xls file.")
       content <- as.data.frame(readxl::read_excel(name))
     },
@@ -345,32 +349,34 @@ get_name <- function(url, format) {
     name <- substr(name, 1, str_locate(name, ".csv")[1,]["end"])
   } else {
     name <- paste0(name, extension)
+    warning(paste("Extension not detected, is posible that the url is a hyperlink, \n check the url: ", url))
   }
   name
 }
 
-get_format <- function(file) {
-  position <- stri_locate_last(file, regex = "\\.")
-  extension <- substr(file, position, 10000)
 
-  switch(extension,
-         ".csv" = { format <- "text/csv" },
-         ".pdf" = { format <- "application/pdf" },
-         ".xls" = { format <- "application/vnd.ms-excel" },
-         ".json" = { format <- "application/json" },
-         ".ods" = { format <- "application/vnd.oasis.opendocument.spreadsheet"},
-         ".xlsx" = { format <- "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"})
+#' @title Get the format that matches with the extension passed like parameter
+#'
+#' @param ext A string that contains the extension
+#'
+#' @return A string
+#' @export
+get_format <- function(ext) {
+  position <- stri_locate_last(ext, regex = "\\.")
+  extension <- substr(ext, position, 10000)
+
+  format <- rownames(datos)[datos$Extension == extension]
   format
 }
 
+#' @title Get the extension that matches with the format passed like parameter
+#'
+#' @param format A string that contains the format
+#'
+#' @return A string
+#' @export
 get_extension <- function(format) {
-  switch(format,
-         "text/csv" = { extension <- ".csv" },
-         "application/pdf" = { extension <- ".pdf" },
-         "application/vnd.ms-excel" = { extension <- ".xls" },
-         "application/json" = { extension <- ".json" },
-         "application/vnd.oasis.opendocument.spreadsheet" = { extension <- ".ods"},
-         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" = { extension <- ".xlsx"})
+  extension <- datos[format,]
   extension
 }
 
