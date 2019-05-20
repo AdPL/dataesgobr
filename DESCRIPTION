@@ -23,6 +23,7 @@ Imports:
   shiny,
   shinythemes,
   shinycssloaders,
-  shinyjs
+  shinyjs,
+  DT
 Suggests:
   testthat
