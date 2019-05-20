@@ -537,3 +537,17 @@ get_id <- function(url) {
   name <- substr(url, position+1, 10000)
   name
 }
+
+#' @title This method send a request to datos.gob.es and return a data.frame
+#' that contains the themes available in the catalog
+#'
+#' @export
+#' @return A data.frame
+get_themes_from_api <- function() {
+  data <- data.frame()
+
+  search <- "https://datos.gob.es/apidata/catalog/theme?_pageSize=200&_page=0"
+  response <- jsonlite::fromJSON(search)
+
+  data <- response[["result"]][["items"]]
+}
