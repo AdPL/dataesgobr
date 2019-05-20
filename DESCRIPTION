@@ -19,6 +19,7 @@ Imports:
   jsonlite,
   graphics,
   readxl,
-  readODS
+  readODS,
+  shiny
 Suggests:
   testthat
