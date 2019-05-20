@@ -20,6 +20,9 @@ Imports:
   graphics,
   readxl,
   readODS,
-  shiny
+  shiny,
+  shinythemes,
+  shinycssloaders,
+  shinyjs
 Suggests:
   testthat
