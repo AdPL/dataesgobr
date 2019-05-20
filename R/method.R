@@ -18,7 +18,6 @@
 #'
 #' }
 #' @export
-#' @import jsonlite
 #' @return A data.frame containing information about datasets that match with
 #' the title param
 search_by_title <- function(title, numentry = 50, page = 0) {
@@ -27,7 +26,7 @@ search_by_title <- function(title, numentry = 50, page = 0) {
 
   search <- paste("https://datos.gob.es/apidata/catalog/dataset/title/",
                   title, "?_pageSize=", numentry, "&_page=", page, sep = "")
-  response <- fromJSON(search)
+  response <- jsonlite::fromJSON(search)
 
   data <- response[["result"]][["items"]]
 }
@@ -47,7 +46,7 @@ search_by_id <- function(id) {
   stopifnot(is.character(id))
 
   search <- paste("https://datos.gob.es/apidata/catalog/dataset/", id, sep = "")
-  response <- fromJSON(search)
+  response <- jsonlite::fromJSON(search)
   datos <- response[["result"]][["items"]]
 
   if (length(datos) == 0) {
@@ -365,7 +364,7 @@ get_format <- function(ext) {
   position <- stri_locate_last(ext, regex = "\\.")
   extension <- substr(ext, position, 10000)
 
-  format <- rownames(datos)[datos$Extension == extension]
+  format <- rownames(dataesgobr::datos)[dataesgobr::datos$Extension == extension]
   format
 }
 
@@ -376,7 +375,7 @@ get_format <- function(ext) {
 #' @return A string
 #' @export
 get_extension <- function(format) {
-  extension <- datos[format,]
+  extension <- dataesgobr::datos[format,]
   extension
 }
 
@@ -391,7 +390,7 @@ get_publisher <- function(id = "") {
   data <- data.frame()
 
   search <- paste0("https://datos.gob.es/apidata/catalog/publisher?_sort=notation&_pageSize=200&_page=0")
-  response <- fromJSON(search)
+  response <- jsonlite::fromJSON(search)
   data <- response[["result"]][["items"]]
 
   if (id == "") {
