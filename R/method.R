@@ -56,6 +56,28 @@ search_by_id <- function(id) {
   }
 }
 
+#' @title Creates a data.frame containing datasets from datos.gob.es
+#' @description Send a request to datos.gob.es using the theme param
+#' to search datasets that match with the theme, then the results are returned
+#' as data.frame
+#'
+#' @param theme Theme to search
+#' @param numentry Number of results for page
+#' @param page The number of page to see, the first page is 0
+#'
+#' @export
+#' @return A data.frame
+search_by_theme <- function(theme, numentry = 50, page = 0) {
+  stopifnot(is.character(theme), is.numeric(numentry))
+  data <- data.frame()
+
+  search <- paste("https://datos.gob.es/apidata/catalog/dataset/theme/",
+                  theme, "?_pageSize=", numentry, "&_page=", page, sep = "")
+  response <- jsonlite::fromJSON(search)
+
+  data <- response[["result"]][["items"]]
+}
+
 #' @title Filter data.frame by title using q param
 #'
 #' @param data A data.frame that will be filtered
