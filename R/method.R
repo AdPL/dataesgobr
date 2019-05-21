@@ -102,6 +102,28 @@ search_by_spatial <- function(spatial1, spatial2, numentry = 50, page = 0) {
   data <- response[["result"]][["items"]]
 }
 
+#' @title Creates a data.frame containing datasets from datos.gob.es
+#' @description Send a request to datos.gob.es using the publisher param
+#' to search datasets that match with the publisher, then the results are returned
+#' as data.frame
+#'
+#' @param publisher Publisher to search
+#' @param numentry Number of results for page
+#' @param page The number of page to see, the first page is 0
+#'
+#' @export
+#' @return A data.frame
+search_by_publisher <- function(publisher, numentry = 50, page = 0) {
+  stopifnot(is.character(publisher), is.numeric(numentry))
+  data <- data.frame()
+
+  search <- paste("https://datos.gob.es/apidata/catalog/dataset/publisher/",
+                  publisher, "?_pageSize=", numentry, "&_page=", page, sep = "")
+  response <- jsonlite::fromJSON(search)
+
+  data <- response[["result"]][["items"]]
+}
+
 #' @title Filter data.frame by title using q param
 #'
 #' @param data A data.frame that will be filtered
