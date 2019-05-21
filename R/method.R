@@ -78,6 +78,30 @@ search_by_theme <- function(theme, numentry = 50, page = 0) {
   data <- response[["result"]][["items"]]
 }
 
+#' @title Creates a data.frame containing datasets from datos.gob.es
+#' @description Send a request to datos.gob.es using spatial params
+#' to search datasets that match with the spatial1 and spatial2, then
+#' the results are returned as data.frame
+#'
+#' @param spatial1 First word of spatial. It can be: "Autonomia", "Pais" or "Provincia"
+#' @param spatial2 Second word of spatial
+#' @param numentry Number of results for page
+#' @param page The number of page to see, the first page is 0
+#'
+#' @export
+#' @return A data.frame
+search_by_spatial <- function(spatial1, spatial2, numentry = 50, page = 0) {
+  stopifnot(is.character(spatial1), is.character(spatial1), is.numeric(numentry))
+  data <- data.frame()
+
+  search <- paste("https://datos.gob.es/apidata/catalog/dataset/spatial/",
+                  spatial1, "/", spatial2, "?_pageSize=", numentry, "&_page=",
+                  page, sep = "")
+  response <- jsonlite::fromJSON(search)
+
+  data <- response[["result"]][["items"]]
+}
+
 #' @title Filter data.frame by title using q param
 #'
 #' @param data A data.frame that will be filtered
