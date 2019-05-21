@@ -384,21 +384,15 @@ get_extension <- function(format) {
 #' @param id A string with the dataset's ID
 #' @export
 #' @import dplyr
-#' @return A string that contains the publisher's name
-get_publisher <- function(id = "") {
+#' @return A data.frame
+get_publisher <- function(id) {
   stopifnot(is.character(id))
   data <- data.frame()
 
-  search <- paste0("https://datos.gob.es/apidata/catalog/publisher?_sort=notation&_pageSize=200&_page=0")
-  response <- jsonlite::fromJSON(search)
-  data <- response[["result"]][["items"]]
+  data <- get_publishers_from_api()
 
-  if (id == "") {
-    data
-  } else {
-    result <- data %>% filter(data["notation"] == id)
-    result
-  }
+  result <- data %>% filter(data["notation"] == id)
+  result
 }
 
 #' @title This function detects the delim from a csv file
