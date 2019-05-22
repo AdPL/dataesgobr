@@ -14,6 +14,9 @@ ui <- bootstrapPage(theme = shinytheme("paper"),
                             tabPanel("Search by title",
                                   textInput(inputId = "title", label = "",
                                             placeholder = "Title"),
+                                  selectInput("themeSelectInput", "Theme", {}, multiple = TRUE),
+                                  selectInput("spatialSelectInput", "Spatial", {}),
+                                  selectInput("publisherSelectInput", "Publisher", {}),
                                   actionButton("submit", "Search")
 
                            )

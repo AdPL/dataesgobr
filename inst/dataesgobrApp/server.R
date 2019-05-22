@@ -3,6 +3,29 @@ library(dplyr)
 
 server <- function(input, output, session) {
   output$datasetsTable <- DT::renderDataTable({})
+  if(!exists("list_themes")) {
+    list_themes <<- get_themes_from_api()$notation
+  }
+  if(!exists("list_spatials")) {
+    list_spatials <<- get_spatials_from_api()
+  }
+  if(!exists("list_publishers")) {
+    list_publishers <<- get_publishers_from_api()
+  }
+
+  updateSelectInput(session, "themeSelectInput",
+                    label = "Theme",
+                    choices = themes,
+                    selected = tail(list_themes,0))
+  updateSelectInput(session, "spatialSelectInput",
+                    label = "Spatial",
+                    choices = list_spatials$label,
+                    selected = tail(list_spatials$label,0))
+  updateSelectInput(session, "publisherSelectInput",
+                    label = "Publisher",
+                    choices = list_publishers$prefLabel,
+                    selected = tail(list_publishers$prefLabel,0))
+
   generateButton <- function(FUN, len, id, ...) {
     buttons <- character(len)
     for (i in seq_len(len)) {
@@ -12,7 +35,18 @@ server <- function(input, output, session) {
   }
 
   observeEvent(input$submit, {
-    datasets <- search_by_title(input$title)
+    datasets <- data.frame()
+
+    spatialSelected <- input$spatialSelectInput
+    message(spatialSelected)
+
+    publisherSelected <- input$publisherSelectInput
+    publisher <- list_publishers %>% filter(list_publishers$prefLabel == publisherSelected)
+
+    themesSelected <- input$themeSelectInput
+
+    datasets <- dataesgobr:::search_by(input$title, themesSelected, publisher = publisher$notation)
+
     if (length(datasets) == 0) {
       output$searchState <- renderText("0 matches found.")
       output$datasetsTable <- DT::renderDT({})
