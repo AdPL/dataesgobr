@@ -1,0 +1,21 @@
+baseurl : "https://datos.gob.es/apidata/"
+catalog : "catalog/"
+nti     : "nti/"
+
+dataset:
+  id           : "dataset/"
+  title        : "dataset/title/"
+  publisher    : "dataset/publisher/"
+  theme        : "dataset/theme/"
+  format       : "dataset/format/"
+  keyword      : "dataset/keyword/"
+  spatial      : "dataset/spatial/"
+  modified     : "dataset/modified/begin/"
+
+params:
+  sort         : "_sort="
+  pagesize     : "_pageSize="
+  page         : "_page="
+
+parse:
+    id      : "[A-z^][0-9]{2,}+([A-z0-9-]*)"
