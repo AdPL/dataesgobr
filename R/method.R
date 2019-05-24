@@ -656,3 +656,71 @@ get_provinces_from_api <- function() {
 
   data <- response[["result"]][["items"]]
 }
+
+#' Title Loads the file url_params and make urls to extract information from the API
+#'
+#' @param field String to specifies the field that we want to search
+#' @param request String with the information to search
+#' @param params Optional list with the parameters to add to the query
+#'
+#' @return A string containing the url generated
+#' @export
+#'
+#' @examples
+#' library(dataesgobr)
+#'\dontrun{
+#' # Generates the url associated to the id passed
+#' url <- make_url("id", "a13002908-residentes-en-la-comunidad-de-madrid-por-lugar-de-nacimiento")
+#'
+#' # Generates the url associated to the title and the parameters passed
+#' url <- make_url("title", "atestados", c("sort" = "title", "pagesize" = 50, "page" = 1))
+#'}
+make_url <- function(field, request, params = NULL) {
+  path <- system.file("url_params.yml", package = "dataesgobr")
+  urls <- yaml::read_yaml(path)
+
+  if(is.element(field, names(urls$dataset))) {
+    url <- paste0(urls$baseurl, urls$catalog)
+    switch (field,
+            id        = url <- paste0(url, urls$dataset$id),
+            title     = url <- paste0(url, urls$dataset$title),
+            publisher = url <- paste0(url, urls$dataset$publisher),
+            theme     = url <- paste0(url, urls$dataset$theme),
+            format    = url <- paste0(url, urls$dataset$format),
+            keyword   = url <- paste0(url, urls$dataset$keyword),
+            spatial   = url <- paste0(url, urls$dataset$spatial),
+            modified  = url <- paste0(url, urls$dataset$modified)
+    )
+    url <- paste0(url, request)
+
+    if (!is.null(params)) {
+      first_parameter <- TRUE
+      url <- paste0(url, "?")
+      if (is.element("sort", names(params))) {
+        first_parameter <- FALSE
+        url <- paste0(url, urls$params$sort, params["sort"])
+      }
+
+      if (is.element("pagesize", names(params))) {
+        if (!first_parameter) {
+          url <- paste0(url, "&")
+        }
+        first_parameter <- FALSE
+        url <- paste0(url, urls$params$pagesize, params["pagesize"])
+      }
+
+      if (is.element("page", names(params))) {
+        if (!first_parameter) {
+          url <- paste0(url, "&")
+        }
+        first_parameter <- FALSE
+        url <- paste0(url, urls$params$page, params["page"])
+      }
+    }
+  } else {
+    warning("Field not found")
+  }
+
+  url
+}
+
