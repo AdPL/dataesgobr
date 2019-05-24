@@ -22,10 +22,12 @@ dataesgobr <- function(url = "",
   } else if (create_from_dataframe) {
     do.call(dataesgobr_from_dataframe, list(dataframe))
   } else {
+    final_languages <- dataesgobr:::prepare_descriptions(description)
+
     value <- list(
       url = url,
       title = title,
-      description = description,
+      description = final_languages,
       issued = issued,
       identifier = identifier,
       formats = format_links,
@@ -53,10 +55,12 @@ dataesgobr_from_json <- function(json) {
     info <- json$distribution$title
   }
 
+  final_languages <- dataesgobr:::prepare_descriptions(json$description)
+
   value <- list(
     url = as.character(json["_about"]),
     title = as.character(json["title"]),
-    description = as.character(json$description[[1]]),
+    description = final_languages,
     formats = access,
     formats_info = info,
     issued = json$issued,
@@ -84,10 +88,12 @@ dataesgobr_from_dataframe <- function(dataframe) {
     info <- dataframe$distribution$title
   }
 
+  final_languages <- dataesgobr:::prepare_descriptions(dataframe$description)
+
   value <- list(
     url = as.character(dataframe["_about"]),
     title = as.character(dataframe["title"]),
-    description = as.character(dataframe$description[[1]]),
+    description = final_languages,
     formats = access,
     formats_info = info,
     issued = dataframe$issued,
