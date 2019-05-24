@@ -20,6 +20,7 @@ Imports:
   graphics,
   readxl,
   readODS,
+  yaml,
   shiny,
   shinythemes,
   shinycssloaders,
