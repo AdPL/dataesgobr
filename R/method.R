@@ -24,8 +24,7 @@ search_by_title <- function(title, numentry = 50, page = 0) {
   stopifnot(is.character(title), is.numeric(numentry))
   data <- data.frame()
 
-  search <- paste("https://datos.gob.es/apidata/catalog/dataset/title/",
-                  title, "?_pageSize=", numentry, "&_page=", page, sep = "")
+  search <- make_url("title", title, c("pagesize" = numentry, "page" = page))
   response <- jsonlite::fromJSON(search)
 
   data <- response[["result"]][["items"]]
@@ -45,8 +44,9 @@ search_by_title <- function(title, numentry = 50, page = 0) {
 search_by_id <- function(id) {
   stopifnot(is.character(id))
 
-  search <- paste("https://datos.gob.es/apidata/catalog/dataset/", id, sep = "")
+  search <- make_url("id", id)
   response <- jsonlite::fromJSON(search)
+
   datos <- response[["result"]][["items"]]
 
   if (length(datos) == 0) {
@@ -71,8 +71,7 @@ search_by_theme <- function(theme, numentry = 50, page = 0) {
   stopifnot(is.character(theme), is.numeric(numentry))
   data <- data.frame()
 
-  search <- paste("https://datos.gob.es/apidata/catalog/dataset/theme/",
-                  theme, "?_pageSize=", numentry, "&_page=", page, sep = "")
+  search <- make_url("theme", theme, c("pagesize" = numentry, "page" = page))
   response <- jsonlite::fromJSON(search)
 
   data <- response[["result"]][["items"]]
@@ -94,9 +93,8 @@ search_by_spatial <- function(spatial1, spatial2, numentry = 50, page = 0) {
   stopifnot(is.character(spatial1), is.character(spatial1), is.numeric(numentry))
   data <- data.frame()
 
-  search <- paste("https://datos.gob.es/apidata/catalog/dataset/spatial/",
-                  spatial1, "/", spatial2, "?_pageSize=", numentry, "&_page=",
-                  page, sep = "")
+  search <- make_url("spatial", paste0(spatial1, "/", spatial2),
+                      c("pagesize" = numentry, "page" = page))
   response <- jsonlite::fromJSON(search)
 
   data <- response[["result"]][["items"]]
@@ -117,8 +115,7 @@ search_by_publisher <- function(publisher, numentry = 50, page = 0) {
   stopifnot(is.character(publisher), is.numeric(numentry))
   data <- data.frame()
 
-  search <- paste("https://datos.gob.es/apidata/catalog/dataset/publisher/",
-                  publisher, "?_pageSize=", numentry, "&_page=", page, sep = "")
+  search <- make_url("publisher", publisher, c("pagesize" = numentry, "page" = page))
   response <- jsonlite::fromJSON(search)
 
   data <- response[["result"]][["items"]]
