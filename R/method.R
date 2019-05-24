@@ -595,8 +595,9 @@ get_formats <- function(data) {
 #' @import stringi
 #' @return A string that contains the ID
 get_id <- function(url) {
-  position <- stri_locate_last(url, regex = "/")
-  name <- substr(url, position+1, 10000)
+  path <- system.file("url_params.yml", package = "dataesgobr")
+  parse <- yaml::read_yaml(path)
+  name <- stri_extract(url, regex = parse$parse$id)
   name
 }
 
