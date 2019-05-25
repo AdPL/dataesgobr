@@ -15,7 +15,7 @@ server <- function(input, output, session) {
 
   updateSelectInput(session, "themeSelectInput",
                     label = "Theme",
-                    choices = themes,
+                    choices = list_themes,
                     selected = tail(list_themes,0))
   updateSelectInput(session, "spatialSelectInput",
                     label = "Spatial",
@@ -45,6 +45,8 @@ server <- function(input, output, session) {
 
     themesSelected <- input$themeSelectInput
 
+    language <- input$languageSelectInput
+
     datasets <- dataesgobr:::search_by(input$title, themesSelected, publisher = publisher$notation)
 
     if (length(datasets) == 0) {
@@ -52,22 +54,25 @@ server <- function(input, output, session) {
       output$datasetsTable <- DT::renderDT({})
     } else {
       output$searchState <- renderText("")
-      output$datasetsTable <- DT::renderDataTable({
-        data <- do.call(rbind,
-                        Map(data.frame,
-                            ID = rownames(datasets),
-                            Title = as.character(datasets$title),
-                            Description = as.character(datasets$description),
-                            About = paste0("<a href='", datasets$`_about`,
-                                           "' target='_blank'>Open in datos.gob.es</a>"),
-                            Actions = generateButton(actionButton,
-                                                     nrow(datasets),
-                                                     'button_',
-                                                     label = "Load dataset",
-                                                     onclick = 'Shiny.onInputChange(\"select_button\", this.id)'),
-                            Url = datasets$`_about`))
+      data <- do.call(rbind,
+                      Map(data.frame,
+                          ID = rownames(datasets),
+                          Title = as.character(datasets$title),
+                          Description = datasets$description,
+                          About = paste0("<a href='", datasets$`_about`,
+                                         "' target='_blank'>Open in datos.gob.es</a>"),
+                          Actions = generateButton(actionButton,
+                                                   nrow(datasets),
+                                                   'button_',
+                                                   label = "Load dataset",
+                                                   onclick = 'Shiny.onInputChange(\"select_button\", this.id)'),
+                          Url = datasets$`_about`))
+
+      data <- data %>% filter(data$`Description._lang` == language)
+
+      output$datasetsTable <- DT::renderDataTable({data
         datasets_downloaded <<- data
-        return(data[2:5])
+        return(data[,c("Title", "Description._value", "About", "Actions")])
       }, escape = FALSE, selection = "none")
       addClass("datasetsTable", "table-responsive")
     }

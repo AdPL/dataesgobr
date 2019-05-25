@@ -17,6 +17,7 @@ ui <- bootstrapPage(theme = shinytheme("paper"),
                                   selectInput("themeSelectInput", "Theme", {}, multiple = TRUE),
                                   selectInput("spatialSelectInput", "Spatial", {}),
                                   selectInput("publisherSelectInput", "Publisher", {}),
+                                  selectInput("languageSelectInput", "Language", {c("es", "eu")}),
                                   actionButton("submit", "Search")
 
                            )
