@@ -121,6 +121,32 @@ search_by_publisher <- function(publisher, numentry = 50, page = 0) {
   data <- response[["result"]][["items"]]
 }
 
+search_by <- function(title, theme, spatial1, spatial2, publisher) {
+  datasets <- data.frame()
+
+  if (!missing(title) && !is.null(title)) {
+    title_data <- search_by_title(title, 200, 0)
+    datasets <- title_data
+  }
+
+  if (!missing(theme) && !is.null(theme)) {
+    theme_data <- search_by_theme(theme, 200, 0)
+    datasets <- merge(datasets, theme_data, all = TRUE)
+  }
+
+  if (!missing(spatial1) && !missing(spatial2)) {
+    spatial_data <- search_by_spatial(spatial1, spatial2, 200, 0)
+    datasets <- merge(datasets, spatial_data, all = TRUE)
+  }
+
+  if (!missing(publisher) && length(publisher) != 0) {
+    publisher_data <- search_by_publisher(publisher, 200, 0)
+    datasets <- merge(datasets, publisher_data)
+  }
+
+  datasets
+}
+
 #' @title Filter data.frame by title using q param
 #'
 #' @param data A data.frame that will be filtered
