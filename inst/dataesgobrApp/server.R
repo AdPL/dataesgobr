@@ -124,10 +124,19 @@ server <- function(input, output, session) {
 
     output$dataTable <- DT::renderDataTable({})
     format <- dataesgobr:::get_format(fileSelected)
-    download_data(data_preload, format, FALSE, dataSelected)
-    content <<- load_data(fileSelected)
-    output$dataTable <- DT::renderDataTable(content)
+    if (length(format) == 0) {
+      showNotification(paste("Error loading the file"), type = "error", duration = 4)
+      showModal(modalDialog(
+        title = "Error!",
+        paste0("Error loading selected dataset, you can try to download and load by your own"),
+        footer = modalButton("Ok")
+      ))
+    } else {
+      download_data(data_preload, format, FALSE, dataSelected)
+      content <<- load_data(fileSelected)
+      output$dataTable <- DT::renderDataTable(content)
 
-    addClass("dataTable", "table-responsive")
+      addClass("dataTable", "table-responsive")
+    }
   })
 }
