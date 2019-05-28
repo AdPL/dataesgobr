@@ -10,3 +10,13 @@ prepare_descriptions <- function(description_dataset) {
 
   final_languages
 }
+
+update_dates <- function(df) {
+  columns <- sapply(df, function(x) !all(is.na(as.Date(as.character(x), format="%d/%m/%Y"))))
+  for (column in names(columns)) {
+    if (columns[column] == TRUE) {
+      df = mutate_each(df, funs(as.Date), column)
+    }
+  }
+  df
+}
