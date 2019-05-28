@@ -396,7 +396,7 @@ load_data <- function(file) {
       check_csv_file(name)
 
       symbol <- get_symbol(name)
-      content <- read_delim(name, delim = symbol)
+      content <- read_delim(name, delim = symbol, na = NA)
     },
     "application/vnd.ms-excel" = {
       message("Loading xls file.")
