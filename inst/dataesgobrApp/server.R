@@ -1,5 +1,6 @@
 library(dataesgobr)
 library(dplyr)
+library(DT)
 
 server <- function(input, output, session) {
   output$datasetsTable <- DT::renderDataTable({})
@@ -134,9 +135,25 @@ server <- function(input, output, session) {
     } else {
       download_data(data_preload, format, FALSE, dataSelected)
       content <<- load_data(fileSelected)
-      output$dataTable <- DT::renderDataTable(content)
+
+      output$dataTable <- DT::renderDataTable(content, editable = TRUE, filter = "top")
 
       addClass("dataTable", "table-responsive")
     }
   })
+
+  output$saveCompletedData <- downloadHandler("content_complete.csv",
+    content = function(file) {
+     write.csv(content, file)
+    }
+  )
+
+  output$saveFilteredData <- downloadHandler("content_filtered.csv",
+    content = function(file) {
+      s <- input$dataTable_rows_selected
+      if (length(s)) {
+        write.csv(content[s, , drop = FALSE], file)
+      }
+    }
+  )
 }

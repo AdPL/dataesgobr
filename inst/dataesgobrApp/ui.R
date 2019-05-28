@@ -60,7 +60,8 @@ ui <- bootstrapPage(theme = shinytheme("paper"),
                             textOutput("dataSelected"),
                             DT::dataTableOutput("dataTable") %>%
                               withSpinner(color = "#0dc5c1"),
-                              uiOutput("pdfViewer")
+                            downloadButton("saveCompletedData", "Save completed data"),
+                            downloadButton("saveFilteredData", "Save selected data")
                           )
                         )
                       )
