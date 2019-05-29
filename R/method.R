@@ -396,7 +396,7 @@ load_data <- function(file) {
       check_csv_file(name)
 
       symbol <- get_symbol(name)
-      content <- read_delim(name, delim = symbol, na = NA)
+      content <- read_delim(name, delim = symbol)
     },
     "application/vnd.ms-excel" = {
       message("Loading xls file.")
@@ -747,3 +747,20 @@ make_url <- function(field, request, params = NULL) {
   url
 }
 
+#' Title Draw a plot using the pararameters passed
+#'
+#' @param type String with plot type
+#' @param data Data.frame that contains the data to plot
+#'
+#' @return plot
+#' @export
+#'
+graphic_data <- function(type, data) {
+  switch(type,
+         "plot" = { graph <- plot(as.factor(data), col = rainbow(10)) },
+         "hist" = { graph <- hist(as.factor(data), col = rainbow(10)) },
+         "pie"  = { graph <- pie(table(as.factor(data)), col = rainbow(10)) }
+         )
+
+  graph
+}
