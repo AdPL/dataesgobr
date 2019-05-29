@@ -136,6 +136,11 @@ server <- function(input, output, session) {
       download_data(data_preload, format, FALSE, dataSelected)
       content <<- load_data(fileSelected)
 
+      updateSelectInput(session, "plotColumnSelect",
+                        label = "Column",
+                        choices = names(content),
+                        selected = tail(names(content), 0))
+
       output$dataTable <- DT::renderDataTable(content, editable = TRUE, filter = "top")
 
       addClass("dataTable", "table-responsive")
@@ -155,5 +160,60 @@ server <- function(input, output, session) {
         write.csv(content[s, , drop = FALSE], file)
       }
     }
+  )
+
+  observeEvent(input$loadPlot, {
+    column <- input$plotColumnSelect
+    type <- input$plotTypeSelect
+    check <- input$plotSelectedCheck
+    output$plot <- renderImage({
+      outfile <- tempfile(fileext='.png')
+
+      width  <- session$clientData$output_plot_width
+      height <- session$clientData$output_plot_height
+      pixelratio <- session$clientData$pixelratio
+
+      png(outfile, width = width*pixelratio, height = height*pixelratio,
+          res = 72*pixelratio)
+      if (check) {
+        s <- input$dataTable_rows_selected
+        dataesgobr:::graphic_data(type, content[[column]][s])
+      } else {
+        dataesgobr:::graphic_data(type, tail(content[[column]], 50))
+      }
+      dev.off()
+
+      list(src = outfile,
+           alt = "This is alternate text")
+    }, deleteFile = TRUE)
+
+  })
+
+  output$saveGeneratedPlot <- downloadHandler(
+    filename <- function() {
+      paste("plot", ".png", sep = "")
+    },
+    content <- function(file) {
+      width  <- session$clientData$output_plot_width
+      height <- session$clientData$output_plot_height
+      pixelratio <- session$clientData$pixelratio
+
+      png(file, width = width*pixelratio, height = height*pixelratio,
+          res = 72*pixelratio)
+
+      column <- input$plotColumnSelect
+      type <- input$plotTypeSelect
+      check <- input$plotSelectedCheck
+      if (check) {
+        s <- input$dataTable_rows_selected
+        graphic_data(type, content[[column]][s])
+      } else {
+        graphic_data(type, tail(content[[column]], 50))
+      }
+
+      print(plot)
+      dev.off()
+    },
+    contentType = "image/png"
   )
 }
