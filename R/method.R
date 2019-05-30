@@ -751,16 +751,41 @@ make_url <- function(field, request, params = NULL) {
 #'
 #' @param type String with plot type
 #' @param data Data.frame that contains the data to plot
+#' @param columns Columns to represent in the plot
+#' @param dataSelected Rows selected from the data
+#' @param xlim Specifies the limit for x axis
+#' @param ylim Specifies the limit for y axis
+#' @param nClasses Split data in classes to draw in bloxplot
 #'
 #' @return plot
 #' @export
 #'
-graphic_data <- function(type, data) {
-  switch(type,
-         "plot" = { graph <- plot(as.factor(data), col = rainbow(10)) },
-         "hist" = { graph <- hist(as.factor(data), col = rainbow(10)) },
-         "pie"  = { graph <- pie(table(as.factor(data)), col = rainbow(10)) }
-         )
+graphic_data <- function(type, data, columns, dataSelected = NULL, xlim = NULL,
+                         ylim = NULL, nClasses = NULL) {
 
+  if (!is.null(dataSelected) && length(columns) == 1) {
+    finalData <- data[[columns]][dataSelected]
+  } else if (type != "boxplot") {
+    finalData <- data[[columns]]
+  }
+
+  switch(type,
+         "plot" = {
+           graph <- plot(as.factor(finalData), col = rainbow(10),
+                         xlim = c(0, xlim), ylim = c(0, ylim))
+         },
+         "hist" = {
+           graph <- hist(finalData, nclass = nClasses, col = rainbow(10),
+                         xlim = c(0, xlim), ylim = c(0, ylim))
+         },
+         "pie"  = {
+           graph <- pie(table(as.factor(finalData)), col = rainbow(10))
+         },
+         "boxplot" = {
+           column1 <- columns[1]
+           column2 <- columns[2]
+           graph <- boxplot(data[[column1]] ~ data[[column2]])
+         }
+        )
   graph
 }
