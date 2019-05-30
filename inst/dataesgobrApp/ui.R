@@ -58,7 +58,6 @@ ui <- bootstrapPage(theme = shinytheme("paper"),
                       fluidRow(
                         column(12,
                           wellPanel(
-                            textOutput("dataSelected"),
                             DT::dataTableOutput("dataTable") %>%
                               withSpinner(color = "#0dc5c1"),
                             downloadButton("saveCompletedData", "Save completed data"),
@@ -70,15 +69,21 @@ ui <- bootstrapPage(theme = shinytheme("paper"),
                       fluidRow(
                         column(4,
                                wellPanel(
+                                 h4("Plot control"),
+                                 checkboxInput("plotSelectedCheck", "Use selected rows", FALSE),
                                  selectInput("plotColumnSelect", "Column", {}),
                                  selectInput("plotTypeSelect", "Type of graphic",
-                                             {c("plot", "hist", "pie")}),
-                                 checkboxInput("plotSelectedCheck", "Use selected rows", FALSE),
+                                             {c("plot", "hist", "pie", "boxplot")}),
+                                 selectInput("plotColumn2Select", "Boxplot column (just works with boxplot type)", {}),
+                                 numericInput("plotNumSelect", "Number of classes in hist (just works with hist type)", value = 2),
+                                 sliderInput("plotXlimSelect", "x range", min = 0, max = 10000, value = 0),
+                                 sliderInput("plotYlimSelect", "y range", min = 0, max = 1000, value = 0),
                                  actionButton("loadPlot", "Load plot")
                                )
                         ),
                         column(8,
                                wellPanel(
+                                 h4("Plot result"),
                                  plotOutput("plot"),
                                  downloadButton("saveGeneratedPlot", "Save plot")
                                )

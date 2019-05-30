@@ -4,6 +4,7 @@ library(DT)
 
 server <- function(input, output, session) {
   output$datasetsTable <- DT::renderDataTable({})
+
   if(!exists("list_themes")) {
     list_themes <<- get_themes_from_api()$notation
   }
@@ -33,6 +34,36 @@ server <- function(input, output, session) {
       buttons[i] <- as.character(FUN(paste0(id, i), ...))
     }
     buttons
+  }
+
+  generateGraph <- function(outfile) {
+    column <- input$plotColumnSelect
+    column2 <- input$plotColumn2Select
+    type <- input$plotTypeSelect
+    nhist <- input$plotNumSelect
+    check <- input$plotSelectedCheck
+    xrange <- input$plotXlimSelect
+    yrange <- input$plotYlimSelect
+    width  <- session$clientData$output_plot_width
+    height <- session$clientData$output_plot_height
+    pixelratio <- session$clientData$pixelratio
+
+    png(outfile, width = width*pixelratio, height = height*pixelratio,
+        res = 72*pixelratio)
+    if (check) {
+      s <- input$dataTable_rows_selected
+      graphic_data(type, content, columns = column, dataSelected = s,
+                   xlim = xrange, ylim = yrange, nClasses = nhist)
+    } else {
+      if (type == "boxplot" && column2 != "") {
+        graphic_data(type, content, columns = c(column, column2),
+                     xlim = xrange, ylim = yrange, nClasses = nhist)
+      } else {
+        graphic_data(type, content, columns = column,
+                     xlim = xrange, ylim = yrange, nClasses = nhist)
+      }
+    }
+    dev.off()
   }
 
   observeEvent(input$submit, {
@@ -73,7 +104,8 @@ server <- function(input, output, session) {
 
       output$datasetsTable <- DT::renderDataTable({data
         datasets_downloaded <<- data
-        return(data[,c("Title", "Description._value", "About", "Actions")])
+        names(data)[names(data) == "Description._value"] <- "Description"
+        return(data[,c("Title", "Description", "About", "Actions")])
       }, escape = FALSE, selection = "none")
       addClass("datasetsTable", "table-responsive")
     }
@@ -119,7 +151,6 @@ server <- function(input, output, session) {
   observeEvent(input$load_data, {
     dataSelected <- as.numeric(strsplit(input$load_data, "_")[[1]][2])
     fileSelected <- as.character(data_preload$formats[dataSelected][1])
-    output$dataSelected <- renderText(paste("url a cargar:", fileSelected))
 
     showNotification(paste("Loading data, please wait..."), type = "warning", duration = 4)
 
@@ -141,6 +172,17 @@ server <- function(input, output, session) {
                         choices = names(content),
                         selected = tail(names(content), 0))
 
+      updateSelectInput(session, "plotColumn2Select",
+                        choices = names(content),
+                        selected = tail(names(content), 0))
+
+      updateSliderInput(session, "plotYlimSelect",
+                        label = "y range",
+                        value = 0,
+                        min = 0,
+                        max = nrow(content),
+                        step = 1)
+
       output$dataTable <- DT::renderDataTable(content, editable = TRUE, filter = "top")
 
       addClass("dataTable", "table-responsive")
@@ -156,33 +198,21 @@ server <- function(input, output, session) {
   output$saveFilteredData <- downloadHandler("content_filtered.csv",
     content = function(file) {
       s <- input$dataTable_rows_selected
-      if (length(s)) {
+      if (length(s) > 0) {
         write.csv(content[s, , drop = FALSE], file)
+      } else {
+        showModal(modalDialog(
+          title = "Error!", "You must select one row at least",
+          footer = modalButton("Ok")
+        ))
       }
     }
   )
 
   observeEvent(input$loadPlot, {
-    column <- input$plotColumnSelect
-    type <- input$plotTypeSelect
-    check <- input$plotSelectedCheck
     output$plot <- renderImage({
       outfile <- tempfile(fileext='.png')
-
-      width  <- session$clientData$output_plot_width
-      height <- session$clientData$output_plot_height
-      pixelratio <- session$clientData$pixelratio
-
-      png(outfile, width = width*pixelratio, height = height*pixelratio,
-          res = 72*pixelratio)
-      if (check) {
-        s <- input$dataTable_rows_selected
-        dataesgobr:::graphic_data(type, content[[column]][s])
-      } else {
-        dataesgobr:::graphic_data(type, tail(content[[column]], 50))
-      }
-      dev.off()
-
+      generateGraph(outfile)
       list(src = outfile,
            alt = "This is alternate text")
     }, deleteFile = TRUE)
@@ -194,23 +224,7 @@ server <- function(input, output, session) {
       paste("plot", ".png", sep = "")
     },
     content <- function(file) {
-      width  <- session$clientData$output_plot_width
-      height <- session$clientData$output_plot_height
-      pixelratio <- session$clientData$pixelratio
-
-      png(file, width = width*pixelratio, height = height*pixelratio,
-          res = 72*pixelratio)
-
-      column <- input$plotColumnSelect
-      type <- input$plotTypeSelect
-      check <- input$plotSelectedCheck
-      if (check) {
-        s <- input$dataTable_rows_selected
-        graphic_data(type, content[[column]][s])
-      } else {
-        graphic_data(type, tail(content[[column]], 50))
-      }
-
+      generateGraph(file)
       print(plot)
       dev.off()
     },
