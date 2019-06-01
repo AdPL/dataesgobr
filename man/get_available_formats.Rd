@@ -2,7 +2,8 @@
 % Please edit documentation in R/method.R
 \name{get_available_formats}
 \alias{get_available_formats}
-\title{Generate a data.frame that contains the type of elements, information and repetitions for each one}
+\title{Generate a data.frame that contains the type of elements,
+information and repetitions for each one}
 \usage{
 get_available_formats(data)
 }
@@ -13,5 +14,13 @@ get_available_formats(data)
 A data.frame
 }
 \description{
-Generate a data.frame that contains the type of elements, information and repetitions for each one
+Generate a data.frame that contains the type of elements,
+information and repetitions for each one
+}
+\examples{
+library(dataesgobr)
+\dontrun{
+formats <- get_available_formats("dataesgobrObject")
+formats
+}
 }

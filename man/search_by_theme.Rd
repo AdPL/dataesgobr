@@ -21,3 +21,10 @@ Send a request to datos.gob.es using the theme param
 to search datasets that match with the theme, then the results are returned
 as data.frame
 }
+\examples{
+library(dataesgobr)
+\dontrun{
+datasetsPublic <- search_by_id('sector-publico', 20)
+datasetsSalud <- search_by_id('salud', page = 2)
+}
+}

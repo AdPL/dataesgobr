@@ -15,3 +15,9 @@ Return a logical, if the file is correct it will be TRUE, else FALSE
 \description{
 Check if the dataset has a correct format
 }
+\examples{
+library(dataesgobr)
+\dontrun{
+correct <- check_file("fichero.csv")
+}
+}

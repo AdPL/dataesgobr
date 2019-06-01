@@ -15,3 +15,9 @@ A data.frame
 \description{
 Get the publisher of the dataset
 }
+\examples{
+library(dataesgobr)
+\dontrun{
+publisher <- get_publisher("L01280066")
+}
+}

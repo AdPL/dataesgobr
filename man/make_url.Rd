@@ -2,7 +2,7 @@
 % Please edit documentation in R/method.R
 \name{make_url}
 \alias{make_url}
-\title{Title Loads the file url_params and make urls to extract information from the API}
+\title{Loads the file url_params and make urls to extract information from the API}
 \usage{
 make_url(field, request, params = NULL)
 }
@@ -17,15 +17,14 @@ make_url(field, request, params = NULL)
 A string containing the url generated
 }
 \description{
-Title Loads the file url_params and make urls to extract information from the API
+Loads the file url_params and make urls to extract information from the API
 }
 \examples{
 library(dataesgobr)
-\dontrun{
+
 # Generates the url associated to the id passed
 url <- make_url("id", "a13002908-residentes-en-la-comunidad-de-madrid-por-lugar-de-nacimiento")
 
 # Generates the url associated to the title and the parameters passed
 url <- make_url("title", "atestados", c("sort" = "title", "pagesize" = 50, "page" = 1))
-}
 }

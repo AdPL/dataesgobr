@@ -15,3 +15,9 @@ The symbol as character that split the columns
 \description{
 This function detects the delim from a csv file
 }
+\examples{
+library(dataesgobr)
+\dontrun{
+symbol <- get_publisher("fichero.csv")
+}
+}

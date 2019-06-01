@@ -16,3 +16,15 @@ graphic_keywords(list, type = "circular", nrepeats = 0)
 \description{
 Represent keywords in a plot
 }
+\examples{
+library(dataesgobr)
+\dontrun{
+datasets <- search_by_title('salud')
+keywords <- get_all_keywords(datasets)
+graphic_keywords(keywords, 'circular', '5')
+
+datasets <- search_by_title('salud')
+keywords <- get_all_keywords(datasets)
+graphic_keywords(keywords, 'barras', '7')
+}
+}

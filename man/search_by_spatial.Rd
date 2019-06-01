@@ -23,3 +23,10 @@ Send a request to datos.gob.es using spatial params
 to search datasets that match with the spatial1 and spatial2, then
 the results are returned as data.frame
 }
+\examples{
+library(dataesgobr)
+\dontrun{
+datasetsSpain <- search_by_spatial('Pais', 'España')
+datasetsJaen <- search_by_id('Provincia', 'Jaén')
+}
+}

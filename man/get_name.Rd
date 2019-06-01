@@ -17,3 +17,8 @@ A string with the file's name
 \description{
 Extract the name of the file in the URL
 }
+\examples{
+library(dataesgobr)
+name <- get_name("archivo-de-datos.csv&rnd=1234", "text/csv")
+name <- get_name("https://datos.ayto-arganda.es/contratos.pdf", "application/pdf")
+}

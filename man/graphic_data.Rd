@@ -2,7 +2,7 @@
 % Please edit documentation in R/method.R
 \name{graphic_data}
 \alias{graphic_data}
-\title{Title Draw a plot using the pararameters passed}
+\title{Draw a plot using the pararameters passed}
 \usage{
 graphic_data(type, data, columns, dataSelected = NULL, xlim = NULL,
   ylim = NULL, nClasses = NULL)
@@ -26,5 +26,16 @@ graphic_data(type, data, columns, dataSelected = NULL, xlim = NULL,
 plot
 }
 \description{
-Title Draw a plot using the pararameters passed
+Draw a plot using the pararameters passed
+}
+\examples{
+library(dataesgobr)
+\dontrun{
+datasets <- search_by_title('atestados')
+dataset <- load_dataset(datasets)
+download_data(dataset)
+content <- load_data("DB_HER_1999.csv")
+graph <- graphic_data("plot", content, "SEXO", xlim = 3, ylim = 2000)
+graph
+}
 }

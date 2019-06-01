@@ -15,3 +15,8 @@ A string that contains the ID
 \description{
 This method extracts the ID from an URL
 }
+\examples{
+library(dataesgobr)
+id <- get_id("https://datos.gob.es/es/catalogo/l01280066-tramites-salud1")
+id
+}

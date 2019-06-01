@@ -15,3 +15,13 @@ A string
 \description{
 Get the extension that matches with the format passed like parameter
 }
+\examples{
+library(dataesgobr)
+format <- get_extension("text/csv")
+
+format
+
+format <- get_format("application/pdf")
+
+format
+}

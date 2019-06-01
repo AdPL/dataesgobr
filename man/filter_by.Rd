@@ -25,3 +25,11 @@ A data.frame that matches
 \description{
 Filter data.frame using params passed
 }
+\examples{
+library(dataesgobr)
+\dontrun{
+datasets <- search_by_title('salud')
+datasetsFiltered <- filter_by_title(datasets, '2018', 'vacuna')
+datasetsFiltered2 <- filter_by_title(datasets, '2018', keywords = 'vacuna')
+}
+}

@@ -16,6 +16,9 @@
 #' # Return the first 78 matches that contain puente in their title
 #' mydataesgobr <- dataesgobr_search_by_title('puente', 78)
 #'
+#' # Return the first 78 matches that contain puente in their title found in the
+#' second page (number 1)
+#' mydataesgobr <- dataesgobr_search_by_title('puente', 78, page = 1)
 #' }
 #' @export
 #' @return A data.frame containing information about datasets that match with
@@ -37,7 +40,8 @@ search_by_title <- function(title, numentry = 50, page = 0) {
 #' @examples
 #' library(dataesgobr)
 #' \dontrun{
-#' dataesgobr_search_by_id('l01280066-presupuestos-20141')
+#' datasets <- search_by_id('l01280066-presupuestos-20141')
+#' datasets <- search_by_id('https://datos.gob.es/es/catalogo/l01280066-tramites-salud1')
 #' }
 #' @export
 #' @return A dataesgobr object
@@ -64,7 +68,12 @@ search_by_id <- function(id) {
 #' @param theme Theme to search
 #' @param numentry Number of results for page
 #' @param page The number of page to see, the first page is 0
-#'
+#' @examples
+#' library(dataesgobr)
+#' \dontrun{
+#' datasetsPublic <- search_by_id('sector-publico', 20)
+#' datasetsSalud <- search_by_id('salud', page = 2)
+#' }
 #' @export
 #' @return A data.frame
 search_by_theme <- function(theme, numentry = 50, page = 0) {
@@ -87,6 +96,12 @@ search_by_theme <- function(theme, numentry = 50, page = 0) {
 #' @param numentry Number of results for page
 #' @param page The number of page to see, the first page is 0
 #'
+#' @examples
+#' library(dataesgobr)
+#' \dontrun{
+#' datasetsSpain <- search_by_spatial('Pais', 'España')
+#' datasetsJaen <- search_by_id('Provincia', 'Jaén')
+#' }
 #' @export
 #' @return A data.frame
 search_by_spatial <- function(spatial1, spatial2, numentry = 50, page = 0) {
@@ -109,6 +124,13 @@ search_by_spatial <- function(spatial1, spatial2, numentry = 50, page = 0) {
 #' @param numentry Number of results for page
 #' @param page The number of page to see, the first page is 0
 #'
+#' @examples
+#' library(dataesgobr)
+#' \dontrun{
+#' url <- make_url("publisher", L01280066)
+#' datasets <- search_by_publisher(url)
+#' datasets <- search_by_publisher('L01280066')
+#' }
 #' @export
 #' @return A data.frame
 search_by_publisher <- function(publisher, numentry = 50, page = 0) {
@@ -121,6 +143,21 @@ search_by_publisher <- function(publisher, numentry = 50, page = 0) {
   data <- response[["result"]][["items"]]
 }
 
+#' @title Creates a data.frame containing datasets from datos.gob.es that matches
+#' the parameters passed
+#'
+#' @param title Title field
+#' @param theme Theme field
+#' @param spatial1 SpatialWord 1
+#' @param spatial2 SpatialWord 2
+#' @param publisher Publisher field
+#'
+#' @examples
+#' library(dataesgobr)
+#' \dontrun{
+#' datasets <- search_by('atestados', 'salud', 'Provincia', 'Jaén')
+#' }
+#' @return A data.frame
 search_by <- function(title, theme, spatial1, spatial2, publisher) {
   datasets <- data.frame()
 
@@ -154,6 +191,13 @@ search_by <- function(title, theme, spatial1, spatial2, publisher) {
 #' @param quiet Set if the function can print info messages or not
 #' @import dplyr
 #' @import stringr
+#'
+#' @examples
+#' library(dataesgobr)
+#' \dontrun{
+#' datasets <- search_by_title('salud')
+#' datasetsFiltered <- filter_by_title(datasets, '2018')
+#' }
 #' @export
 #' @return A data.frame with rows that matches the dataset title
 filter_by_title <- function(data, q, quiet = FALSE) {
@@ -177,6 +221,13 @@ filter_by_title <- function(data, q, quiet = FALSE) {
 #' @param quiet Set if the function can print info messages or not
 #' @import dplyr
 #' @import stringr
+#'
+#' @examples
+#' library(dataesgobr)
+#' \dontrun{
+#' datasets <- search_by_title('salud')
+#' datasetsFiltered <- filter_by_description(datasets, '2018')
+#' }
 #' @export
 #' @return A data.frame with rows that matches the description
 filter_by_description <- function(data, q, quiet = FALSE) {
@@ -200,6 +251,13 @@ filter_by_description <- function(data, q, quiet = FALSE) {
 #' @param quiet Set if the function can print info messages or not
 #' @import dplyr
 #' @import stringr
+#'
+#' @examples
+#' library(dataesgobr)
+#' \dontrun{
+#' datasets <- search_by_title('salud')
+#' datasetsFiltered <- filter_by_keywords(datasets, 'vacuna')
+#' }
 #' @export
 #' @return A data.frame that matches any given keyword
 filter_by_keywords <- function(data, keywords, quiet = FALSE) {
@@ -225,6 +283,14 @@ filter_by_keywords <- function(data, keywords, quiet = FALSE) {
 #' @param quiet A logical param that set if the function will print info message
 #' in console
 #' @import dplyr
+#'
+#' @examples
+#' library(dataesgobr)
+#' \dontrun{
+#' datasets <- search_by_title('salud')
+#' datasetsFiltered <- filter_by_title(datasets, '2018', 'vacuna')
+#' datasetsFiltered2 <- filter_by_title(datasets, '2018', keywords = 'vacuna')
+#' }
 #' @export
 #' @return A data.frame that matches
 filter_by <- function(data, title = NULL, description = NULL, keywords = NULL,
@@ -258,6 +324,18 @@ filter_by <- function(data, title = NULL, description = NULL, keywords = NULL,
 #' @param nrepeats Minimun number of ocurrences to draw in the plot
 #'
 #' @export
+#'
+#' @examples
+#' library(dataesgobr)
+#' \dontrun{
+#' datasets <- search_by_title('salud')
+#' keywords <- get_all_keywords(datasets)
+#' graphic_keywords(keywords, 'circular', '5')
+#'
+#' datasets <- search_by_title('salud')
+#' keywords <- get_all_keywords(datasets)
+#' graphic_keywords(keywords, 'barras', '7')
+#' }
 #' @import graphics
 #' @import grDevices
 #' @import utils
@@ -282,6 +360,13 @@ graphic_keywords <- function(list, type = "circular", nrepeats = 0) {
 #' @title Obtain keywords in data.frame with the number of ocurrences
 #'
 #' @param data A data.frame with datasets from datos.gob.es
+#'
+#' @examples
+#' library(dataesgobr)
+#' \dontrun{
+#' datasets <- search_by_title('consumo')
+#' keywords <- get_all_keywords(datasets)
+#' }
 #' @export
 #' @return A list with keywords
 get_all_keywords <- function(data) {
@@ -305,7 +390,18 @@ get_all_keywords <- function(data) {
 #'
 #' @param dataframe A data.frame with datasets from datos.gob.es
 #' @param row A number of the row in the data.frame. If the dataset has more
-#' than one element this param determinates the row to load
+#' than one element this param determinates the row to load. If row parameter is
+#' missing then the function will load the first row
+#'
+#' @examples
+#' library(dataesgobr)
+#' \dontrun{
+#' datasets <- search_by_title('salud')
+#' dataset <- load_dataset(datasets)
+#'
+#' datasets <- search_by_title('consumo')
+#' dataset <- load_dataset(datasets, 5)
+#' }
 #' @export
 #' @return A dataesgobr object
 load_dataset <- function(dataframe, row = 1) {
@@ -325,6 +421,17 @@ load_dataset <- function(dataframe, row = 1) {
 #' @param all This parameter indicates if the function must download every file
 #' @param position The number in the format list
 #'
+#' @examples
+#' library(dataesgobr)
+#' \dontrun{
+#' datasets <- search_by_title('salud')
+#' dataset <- load_dataset(datasets)
+#'
+#' download_data(dataset, "text/csv")
+#' download_data(dataset, "text/csv", FALSE, 2)
+#' download_data(dataset, "application/pdf", TRUE)
+#' download_data(dataset, "text/csv", position = 1)
+#' }
 #' @export
 #' @import httr
 #' @import readr
@@ -375,6 +482,16 @@ download_data <- function(x, format, all = TRUE, position = 0) {
 #' @description This function loads the data from the file passed like param
 #'
 #' @param file A file with data previously downloaded
+#'
+#' @examples
+#' library(dataesgobr)
+#' \dontrun{
+#' datasets <- search_by_title('salud')
+#' dataset <- load_dataset(datasets)
+#'
+#' download_data(dataset, "text/csv")
+#' load_data('salud-2018.csv')
+#' }
 #' @export
 #' @import httr
 #' @import readr
@@ -418,6 +535,11 @@ load_data <- function(file) {
 #'
 #' @param url A string with URL and the name of the file
 #' @param format The data's format to check the extension
+#'
+#' @examples
+#' library(dataesgobr)
+#' name <- get_name("archivo-de-datos.csv&rnd=1234", "text/csv")
+#' name <- get_name("https://datos.ayto-arganda.es/contratos.pdf", "application/pdf")
 #' @export
 #' @import stringr
 #' @import stringi
@@ -444,11 +566,19 @@ get_name <- function(url, format) {
   name
 }
 
-
 #' @title Get the format that matches with the extension passed like parameter
 #'
 #' @param ext A string that contains the extension
 #'
+#' @examples
+#' library(dataesgobr)
+#' format <- get_format(".csv")
+#'
+#' format
+#'
+#' format <- get_format(".pdf")
+#'
+#' format
 #' @return A string
 #' @export
 get_format <- function(ext) {
@@ -463,6 +593,15 @@ get_format <- function(ext) {
 #'
 #' @param format A string that contains the format
 #'
+#' @examples
+#' library(dataesgobr)
+#' format <- get_extension("text/csv")
+#'
+#' format
+#'
+#' format <- get_format("application/pdf")
+#'
+#' format
 #' @return A string
 #' @export
 get_extension <- function(format) {
@@ -474,6 +613,12 @@ get_extension <- function(format) {
 #'
 #' @param id A string with the dataset's ID
 #' @export
+#'
+#' @examples
+#' library(dataesgobr)
+#' \dontrun{
+#' publisher <- get_publisher("L01280066")
+#' }
 #' @import dplyr
 #' @return A data.frame
 get_publisher <- function(id) {
@@ -489,6 +634,12 @@ get_publisher <- function(id) {
 #' @title This function detects the delim from a csv file
 #'
 #' @param file The file with the content to check
+#'
+#' @examples
+#' library(dataesgobr)
+#' \dontrun{
+#' symbol <- get_publisher("fichero.csv")
+#' }
 #' @import readr
 #' @return The symbol as character that split the columns
 get_symbol <- function(file) {
@@ -503,6 +654,11 @@ get_symbol <- function(file) {
 #' @title Check if the dataset has a correct format
 #'
 #' @param file The file to check
+#' @examples
+#' library(dataesgobr)
+#' \dontrun{
+#' correct <- check_file("fichero.csv")
+#' }
 #' @export
 #' @import httr
 #' @return Return a logical, if the file is correct it will be TRUE, else FALSE
@@ -525,6 +681,18 @@ check_file <- function(file) {
   result
 }
 
+#' @title Check if the csv file has a correct format
+#'
+#' @param file The file's path
+#'
+#' @return A logical
+#' @export
+#'
+#' @examples
+#' library(dataesgobr)
+#' \dontrun{
+#' correct <- check_csv_file("fichero.csv")
+#' }
 check_csv_file <- function(file) {
   stopifnot(file.exists(file))
   content <- read_lines(file)
@@ -570,8 +738,15 @@ check_csv_file <- function(file) {
   correct
 }
 
-#' @title Generate a data.frame that contains the type of elements, information and repetitions for each one
+#' @title Generate a data.frame that contains the type of elements,
+#' information and repetitions for each one
 #' @export
+#' @examples
+#' library(dataesgobr)
+#' \dontrun{
+#' formats <- get_available_formats("dataesgobrObject")
+#' formats
+#' }
 #' @param data A dataesgobr object
 #' @return A data.frame
 get_available_formats <- function(data) {
@@ -593,8 +768,15 @@ get_available_formats <- function(data) {
   formats
 }
 
-#' @title Generate a list that contains the type of elements and repetitions for each one
+#' @title Generate a list that contains the type of elements and repetitions for
+#' each one
 #' @export
+#' @examples
+#' library(dataesgobr)
+#' \dontrun{
+#' formats <- get_formats("dataesgobrObject")
+#' formats
+#' }
 #' @param data A dataesgobr object
 #' @return A list
 get_formats <- function(data) {
@@ -615,6 +797,10 @@ get_formats <- function(data) {
 #' @title This method extracts the ID from an URL
 #' @export
 #' @param url A string
+#' @examples
+#' library(dataesgobr)
+#' id <- get_id("https://datos.gob.es/es/catalogo/l01280066-tramites-salud1")
+#' id
 #' @import stringi
 #' @return A string that contains the ID
 get_id <- function(url) {
@@ -680,7 +866,7 @@ get_provinces_from_api <- function() {
   data <- response[["result"]][["items"]]
 }
 
-#' Title Loads the file url_params and make urls to extract information from the API
+#' @title Loads the file url_params and make urls to extract information from the API
 #'
 #' @param field String to specifies the field that we want to search
 #' @param request String with the information to search
@@ -691,13 +877,12 @@ get_provinces_from_api <- function() {
 #'
 #' @examples
 #' library(dataesgobr)
-#'\dontrun{
+#'
 #' # Generates the url associated to the id passed
 #' url <- make_url("id", "a13002908-residentes-en-la-comunidad-de-madrid-por-lugar-de-nacimiento")
 #'
 #' # Generates the url associated to the title and the parameters passed
 #' url <- make_url("title", "atestados", c("sort" = "title", "pagesize" = 50, "page" = 1))
-#'}
 make_url <- function(field, request, params = NULL) {
   path <- system.file("url_params.yml", package = "dataesgobr")
   urls <- yaml::read_yaml(path)
@@ -747,7 +932,7 @@ make_url <- function(field, request, params = NULL) {
   url
 }
 
-#' Title Draw a plot using the pararameters passed
+#' @title Draw a plot using the pararameters passed
 #'
 #' @param type String with plot type
 #' @param data Data.frame that contains the data to plot
@@ -756,7 +941,16 @@ make_url <- function(field, request, params = NULL) {
 #' @param xlim Specifies the limit for x axis
 #' @param ylim Specifies the limit for y axis
 #' @param nClasses Split data in classes to draw in bloxplot
-#'
+#' @examples
+#' library(dataesgobr)
+#' \dontrun{
+#' datasets <- search_by_title('atestados')
+#' dataset <- load_dataset(datasets)
+#' download_data(dataset)
+#' content <- load_data("DB_HER_1999.csv")
+#' graph <- graphic_data("plot", content, "SEXO", xlim = 3, ylim = 2000)
+#' graph
+#' }
 #' @return plot
 #' @export
 #'

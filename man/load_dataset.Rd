@@ -10,11 +10,22 @@ load_dataset(dataframe, row = 1)
 \item{dataframe}{A data.frame with datasets from datos.gob.es}
 
 \item{row}{A number of the row in the data.frame. If the dataset has more
-than one element this param determinates the row to load}
+than one element this param determinates the row to load. If row parameter is
+missing then the function will load the first row}
 }
 \value{
 A dataesgobr object
 }
 \description{
 Load dataset from a data.frame
+}
+\examples{
+library(dataesgobr)
+\dontrun{
+datasets <- search_by_title('salud')
+dataset <- load_dataset(datasets)
+
+datasets <- search_by_title('consumo')
+dataset <- load_dataset(datasets, 5)
+}
 }

@@ -31,5 +31,8 @@ mydataesgobr <- dataesgobr_search_by_title('puente')
 # Return the first 78 matches that contain puente in their title
 mydataesgobr <- dataesgobr_search_by_title('puente', 78)
 
+# Return the first 78 matches that contain puente in their title found in the
+second page (number 1)
+mydataesgobr <- dataesgobr_search_by_title('puente', 78, page = 1)
 }
 }

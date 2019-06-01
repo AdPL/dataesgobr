@@ -15,3 +15,13 @@ A data.frame
 \description{
 This function loads the data from the file passed like param
 }
+\examples{
+library(dataesgobr)
+\dontrun{
+datasets <- search_by_title('salud')
+dataset <- load_dataset(datasets)
+
+download_data(dataset, "text/csv")
+load_data('salud-2018.csv')
+}
+}

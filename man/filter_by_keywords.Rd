@@ -19,3 +19,10 @@ A data.frame that matches any given keyword
 \description{
 Filter data.frame by keywords using keywords param
 }
+\examples{
+library(dataesgobr)
+\dontrun{
+datasets <- search_by_title('salud')
+datasetsFiltered <- filter_by_keywords(datasets, 'vacuna')
+}
+}

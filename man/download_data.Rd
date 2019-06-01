@@ -19,3 +19,15 @@ download_data(x, format, all = TRUE, position = 0)
 This function downloads the data associated with the dataset
 passed like param from datos.gob.es
 }
+\examples{
+library(dataesgobr)
+\dontrun{
+datasets <- search_by_title('salud')
+dataset <- load_dataset(datasets)
+
+download_data(dataset, "text/csv")
+download_data(dataset, "text/csv", FALSE, 2)
+download_data(dataset, "application/pdf", TRUE)
+download_data(dataset, "text/csv", position = 1)
+}
+}

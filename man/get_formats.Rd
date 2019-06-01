@@ -2,7 +2,8 @@
 % Please edit documentation in R/method.R
 \name{get_formats}
 \alias{get_formats}
-\title{Generate a list that contains the type of elements and repetitions for each one}
+\title{Generate a list that contains the type of elements and repetitions for
+each one}
 \usage{
 get_formats(data)
 }
@@ -13,5 +14,13 @@ get_formats(data)
 A list
 }
 \description{
-Generate a list that contains the type of elements and repetitions for each one
+Generate a list that contains the type of elements and repetitions for
+each one
+}
+\examples{
+library(dataesgobr)
+\dontrun{
+formats <- get_formats("dataesgobrObject")
+formats
+}
 }

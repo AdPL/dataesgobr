@@ -19,3 +19,10 @@ A data.frame with rows that matches the dataset title
 \description{
 Filter data.frame by title using q param
 }
+\examples{
+library(dataesgobr)
+\dontrun{
+datasets <- search_by_title('salud')
+datasetsFiltered <- filter_by_title(datasets, '2018')
+}
+}

@@ -21,3 +21,11 @@ Send a request to datos.gob.es using the publisher param
 to search datasets that match with the publisher, then the results are returned
 as data.frame
 }
+\examples{
+library(dataesgobr)
+\dontrun{
+url <- make_url("publisher", L01280066)
+datasets <- search_by_publisher(url)
+datasets <- search_by_publisher('L01280066')
+}
+}

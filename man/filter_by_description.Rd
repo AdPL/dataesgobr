@@ -19,3 +19,10 @@ A data.frame with rows that matches the description
 \description{
 Filter data.frame by description using q param
 }
+\examples{
+library(dataesgobr)
+\dontrun{
+datasets <- search_by_title('salud')
+datasetsFiltered <- filter_by_description(datasets, '2018')
+}
+}

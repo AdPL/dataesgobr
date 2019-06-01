@@ -15,3 +15,10 @@ A list with keywords
 \description{
 Obtain keywords in data.frame with the number of ocurrences
 }
+\examples{
+library(dataesgobr)
+\dontrun{
+datasets <- search_by_title('consumo')
+keywords <- get_all_keywords(datasets)
+}
+}
