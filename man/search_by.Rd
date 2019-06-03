@@ -5,16 +5,12 @@
 \title{Creates a data.frame containing datasets from datos.gob.es that matches
 the parameters passed}
 \usage{
-search_by(title, theme, spatial1, spatial2, publisher)
+search_by(title, theme, publisher)
 }
 \arguments{
 \item{title}{Title field}
 
 \item{theme}{Theme field}
-
-\item{spatial1}{SpatialWord 1}
-
-\item{spatial2}{SpatialWord 2}
 
 \item{publisher}{Publisher field}
 }
@@ -28,6 +24,6 @@ the parameters passed
 \examples{
 library(dataesgobr)
 \dontrun{
-datasets <- search_by('atestados', 'salud', 'Provincia', 'Jaén')
+datasets <- search_by('atestados', 'salud', 'Jaén')
 }
 }
