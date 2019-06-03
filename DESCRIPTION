@@ -1,7 +1,7 @@
 Package: dataesgobr
 Type: Package
 Title: Package to access and use Government's Spain API
-Version: 0.0.1
+Version: 1.0.0
 Authors@R: c(person("Adrián", "Pérez", email = "adrianpelopez@gmail.com", role = 
    "cre"), person("Francisco", "Charte", email = "francisco@fcharte.com", role =
    "aut"))
