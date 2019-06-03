@@ -1,6 +1,8 @@
 context("test-search-by-id")
 
 test_that("Search by id works", {
+  expect_is(search_by_id("https://datos.gob.es/es/catalogo/l01280148-contratos-mayores-4-trimestre-20161"),
+              "dataesgobr")
   expect_is(search_by_id("l01280148-contratos-mayores-4-trimestre-20161"),
               "dataesgobr")
 })
