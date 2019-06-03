@@ -24,7 +24,7 @@
 #' @return A data.frame containing information about datasets that match with
 #' the title param
 search_by_title <- function(title, numentry = 50, page = 0) {
-  stopifnot(is.character(title), is.numeric(numentry))
+  stopifnot(is.character(title), is.numeric(numentry), is.numeric(page))
   data <- data.frame()
 
   search <- make_url("title", title, c("pagesize" = numentry, "page" = page))
@@ -48,6 +48,7 @@ search_by_title <- function(title, numentry = 50, page = 0) {
 search_by_id <- function(id) {
   stopifnot(is.character(id))
 
+  id <- get_id(id)
   search <- make_url("id", id)
   response <- jsonlite::fromJSON(search)
 
@@ -77,7 +78,7 @@ search_by_id <- function(id) {
 #' @export
 #' @return A data.frame
 search_by_theme <- function(theme, numentry = 50, page = 0) {
-  stopifnot(is.character(theme), is.numeric(numentry))
+  stopifnot(is.character(theme), is.numeric(numentry), is.numeric(page))
   data <- data.frame()
 
   search <- make_url("theme", theme, c("pagesize" = numentry, "page" = page))
@@ -105,7 +106,8 @@ search_by_theme <- function(theme, numentry = 50, page = 0) {
 #' @export
 #' @return A data.frame
 search_by_spatial <- function(spatial1, spatial2, numentry = 50, page = 0) {
-  stopifnot(is.character(spatial1), is.character(spatial1), is.numeric(numentry))
+  stopifnot(is.character(spatial1), is.character(spatial1), is.numeric(numentry),
+            is.numeric(page))
   data <- data.frame()
 
   search <- make_url("spatial", paste0(spatial1, "/", spatial2),
@@ -134,7 +136,7 @@ search_by_spatial <- function(spatial1, spatial2, numentry = 50, page = 0) {
 #' @export
 #' @return A data.frame
 search_by_publisher <- function(publisher, numentry = 50, page = 0) {
-  stopifnot(is.character(publisher), is.numeric(numentry))
+  stopifnot(is.character(publisher), is.numeric(numentry), is.numeric(page))
   data <- data.frame()
 
   search <- make_url("publisher", publisher, c("pagesize" = numentry, "page" = page))
@@ -148,37 +150,41 @@ search_by_publisher <- function(publisher, numentry = 50, page = 0) {
 #'
 #' @param title Title field
 #' @param theme Theme field
-#' @param spatial1 SpatialWord 1
-#' @param spatial2 SpatialWord 2
 #' @param publisher Publisher field
 #'
 #' @examples
 #' library(dataesgobr)
 #' \dontrun{
-#' datasets <- search_by('atestados', 'salud', 'Provincia', 'Jaén')
+#' datasets <- search_by('atestados', 'salud', 'Jaén')
 #' }
 #' @return A data.frame
-search_by <- function(title, theme, spatial1, spatial2, publisher) {
+search_by <- function(title, theme, publisher) {
   datasets <- data.frame()
 
-  if (!missing(title) && !is.null(title)) {
+  if (!missing(title) && !is.null(title) && title != "") {
+    stopifnot(is.character(title))
     title_data <- search_by_title(title, 200, 0)
     datasets <- title_data
   }
 
   if (!missing(theme) && !is.null(theme)) {
-    theme_data <- search_by_theme(theme, 200, 0)
-    datasets <- merge(datasets, theme_data, all = TRUE)
-  }
-
-  if (!missing(spatial1) && !missing(spatial2)) {
-    spatial_data <- search_by_spatial(spatial1, spatial2, 200, 0)
-    datasets <- merge(datasets, spatial_data, all = TRUE)
+    stopifnot(is.character(theme))
+    for (item in theme) {
+      theme_data <- search_by_theme(item, 200, 0)
+      if (length(datasets) == 0)
+        datasets <- theme_data
+      else
+        datasets <- merge(datasets, theme_data, all = TRUE)
+    }
   }
 
   if (!missing(publisher) && length(publisher) != 0) {
+    stopifnot(is.character(publisher))
     publisher_data <- search_by_publisher(publisher, 200, 0)
-    datasets <- merge(datasets, publisher_data)
+    if (length(datasets) == 0)
+      datasets <- publisher_data
+    else
+      datasets <- merge(datasets, publisher_data, all = TRUE)
   }
 
   datasets
@@ -201,7 +207,8 @@ search_by <- function(title, theme, spatial1, spatial2, publisher) {
 #' @export
 #' @return A data.frame with rows that matches the dataset title
 filter_by_title <- function(data, q, quiet = FALSE) {
-  stopifnot(class(data) == 'data.frame', class(q) == 'character')
+  stopifnot(class(data) == 'data.frame', class(q) == 'character',
+            is.logical(quiet))
 
   result <- filter(data, str_detect(
     str_to_lower(unlist(as.character(data$title))),
@@ -231,7 +238,8 @@ filter_by_title <- function(data, q, quiet = FALSE) {
 #' @export
 #' @return A data.frame with rows that matches the description
 filter_by_description <- function(data, q, quiet = FALSE) {
-  stopifnot(class(data) == 'data.frame', class(q) == 'character')
+  stopifnot(class(data) == 'data.frame', class(q) == 'character',
+            is.logical(quiet))
 
   result <- filter(data, str_detect(
     str_to_lower(unlist(as.character(data$description))),
@@ -261,7 +269,8 @@ filter_by_description <- function(data, q, quiet = FALSE) {
 #' @export
 #' @return A data.frame that matches any given keyword
 filter_by_keywords <- function(data, keywords, quiet = FALSE) {
-  stopifnot(class(data) == 'data.frame', class(keywords) == 'character')
+  stopifnot(class(data) == 'data.frame', class(keywords) == 'character',
+            is.logical(quiet))
 
   result <- filter(data, str_detect(
     str_to_lower(unlist(as.character(data$keyword))),
@@ -340,6 +349,7 @@ filter_by <- function(data, title = NULL, description = NULL, keywords = NULL,
 #' @import grDevices
 #' @import utils
 graphic_keywords <- function(list, type = "circular", nrepeats = 0) {
+  stopifnot(is.list(list), is.character(type), is.numeric(nrepeats))
   list <- list[list>nrepeats]
   switch (type,
     circular = {
@@ -435,11 +445,10 @@ load_dataset <- function(dataframe, row = 1) {
 #' @export
 #' @import httr
 #' @import readr
+#' @import stringr
 download_data <- function(x, format, all = TRUE, position = 0) {
-  if (!requireNamespace("stringr", quietly = TRUE)) {
-    stop("Package \"stringr\" needed for this function to work.
-         Please install it.", call. = FALSE)
-  }
+  stopifnot(class(x) == "dataesgobr", is.character(format), is.logical(all),
+            is.numeric(position))
 
   stopifnot(class(x) == 'dataesgobr')
 
@@ -495,13 +504,10 @@ download_data <- function(x, format, all = TRUE, position = 0) {
 #' @export
 #' @import httr
 #' @import readr
+#' @import stringr
 #' @return A data.frame
 load_data <- function(file) {
-  if (!requireNamespace("stringr", quietly = TRUE)) {
-    stop("Package \"stringr\" needed for this function to work.
-         Please install it.", call. = FALSE)
-  }
-
+  stopifnot(is.character(file))
   cap_speed <- progress(type = c("down", "up"), con = stdout())
 
   format <- get_format(file)
@@ -545,6 +551,7 @@ load_data <- function(file) {
 #' @import stringi
 #' @return A string with the file's name
 get_name <- function(url, format) {
+  stopifnot(is.character(url), is.character(format))
   position <- stri_locate_last(url, regex = "/")
 
   if (is.na(position)[1]) {
@@ -582,6 +589,7 @@ get_name <- function(url, format) {
 #' @return A string
 #' @export
 get_format <- function(ext) {
+  stopifnot(is.character(ext))
   position <- stri_locate_last(ext, regex = "\\.")
   extension <- substr(ext, position, 10000)
 
@@ -605,6 +613,7 @@ get_format <- function(ext) {
 #' @return A string
 #' @export
 get_extension <- function(format) {
+  stopifnot(is.character(format))
   extension <- dataesgobr::datos[format,]
   extension
 }
@@ -643,6 +652,7 @@ get_publisher <- function(id) {
 #' @import readr
 #' @return The symbol as character that split the columns
 get_symbol <- function(file) {
+  stopifnot(is.character(file))
   symbol <- read_lines(file, n_max = 1)
   if (grepl(";", symbol)) {
     symbol <- ";"
@@ -663,6 +673,7 @@ get_symbol <- function(file) {
 #' @import httr
 #' @return Return a logical, if the file is correct it will be TRUE, else FALSE
 check_file <- function(file) {
+  stopifnot(is.character(file))
   result <- FALSE
   if(file.exists(file)) {
     format <- get_format(file)
@@ -780,6 +791,7 @@ get_available_formats <- function(data) {
 #' @param data A dataesgobr object
 #' @return A list
 get_formats <- function(data) {
+  stopifnot(class(data) == "dataesgobr")
   list_of_formats <- list()
 
   for (row in names(data$formats)) {
@@ -884,6 +896,7 @@ get_provinces_from_api <- function() {
 #' # Generates the url associated to the title and the parameters passed
 #' url <- make_url("title", "atestados", c("sort" = "title", "pagesize" = 50, "page" = 1))
 make_url <- function(field, request, params = NULL) {
+  stopifnot(is.character(field), is.character(request))
   path <- system.file("url_params.yml", package = "dataesgobr")
   urls <- yaml::read_yaml(path)
 
@@ -956,6 +969,7 @@ make_url <- function(field, request, params = NULL) {
 #'
 graphic_data <- function(type, data, columns, dataSelected = NULL, xlim = NULL,
                          ylim = NULL, nClasses = NULL) {
+stopifnot(is.character(type), is.character(columns) || is.vector(columns))
 
   if (!is.null(dataSelected) && length(columns) == 1) {
     finalData <- data[[columns]][dataSelected]
