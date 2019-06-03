@@ -20,3 +20,9 @@ update_dates <- function(df) {
   }
   df
 }
+
+prepare_titles <- function(titles_dataset) {
+  titles <- unlist(titles_dataset)
+  title <- titles[1]
+  title
+}
