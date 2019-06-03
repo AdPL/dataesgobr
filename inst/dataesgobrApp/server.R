@@ -4,12 +4,12 @@ library(DT)
 
 server <- function(input, output, session) {
   output$datasetsTable <- DT::renderDataTable({})
+  addClass("saveCompletedData", "hidden")
+  addClass("saveFilteredData", "hidden")
+  addClass("loadPlot", "hidden")
 
   if(!exists("list_themes")) {
     list_themes <<- get_themes_from_api()$notation
-  }
-  if(!exists("list_spatials")) {
-    list_spatials <<- get_spatials_from_api()
   }
   if(!exists("list_publishers")) {
     list_publishers <<- get_publishers_from_api()
@@ -19,10 +19,6 @@ server <- function(input, output, session) {
                     label = "Theme",
                     choices = list_themes,
                     selected = tail(list_themes,0))
-  updateSelectInput(session, "spatialSelectInput",
-                    label = "Spatial",
-                    choices = list_spatials$label,
-                    selected = tail(list_spatials$label,0))
   updateSelectInput(session, "publisherSelectInput",
                     label = "Publisher",
                     choices = list_publishers$prefLabel,
@@ -69,9 +65,6 @@ server <- function(input, output, session) {
   observeEvent(input$submit, {
     datasets <- data.frame()
 
-    spatialSelected <- input$spatialSelectInput
-    message(spatialSelected)
-
     publisherSelected <- input$publisherSelectInput
     publisher <- list_publishers %>% filter(list_publishers$prefLabel == publisherSelected)
 
@@ -111,6 +104,30 @@ server <- function(input, output, session) {
     }
   })
 
+  observeEvent(input$helpButton, {
+    showModal(modalDialog(
+      title = "How to use plot control",
+      p("Plot control is a panel to adjust and generate graphics. It is composed of
+      7 different controls:"),
+      p("- Use selected rows: if this checkbox is active then the plot generated just
+        contains the rows that you selected in the table above."),
+      p("- Type of graphic: in this version you can select between four type of
+        graphics: plot, hist, pie or boxplot."),
+      p("- Column: when you load data in the table above this selectbox will be
+        updated containing the columns in the dataset. So you can select the column
+        that you want to represent."),
+      p("- Boxplot column: if you want to use boxplot representation you will need
+        to use two columns, then you must complete this selectbox. So select the
+        'no-number column' in this selectbox, the number column must be selected
+        in the previous selectbox (column)."),
+      p("- Number of classes: this number input indicates the maximum number of
+        classes in case that you select hist on the type selectbox."),
+      p("- X range and Y range slider: the sliders have the objetive of adjust the
+        graphic in order to produce nice graphics."),
+      footer = modalButton("Ok")
+    ))
+  })
+
   observeEvent(input$select_button, {
     datasetSelected <- as.numeric(strsplit(input$select_button, "_")[[1]][2])
     data_preload <<- search_by_id(dataesgobr:::get_id(datasets_downloaded[datasetSelected,]$Url))
@@ -120,10 +137,9 @@ server <- function(input, output, session) {
     output$datasetTitleSelected <- renderText(data_preload$title)
     output$datasetUrlSelected <- renderUI(tagList(a("Look in datos.gob.es", href = data_preload$url, target = "_blank")))
     output$datasetDescriptionSelected <- renderText(data_preload$description)
-    output$datasetPublisherSelected <- renderText(paste("Publisher: ", get_publisher(get_id(data_preload$publisher))))
+    output$datasetPublisherSelected <- renderText(paste("Publisher:", get_publisher(get_id(data_preload$publisher))$prefLabel))
     output$datasetIssuedSelected <- renderText(paste("Issued: ", data_preload$issued))
     output$datasetKeywordsSelected <- renderText(unlist(data_preload$keywords))
-    output$dataTable <- DT::renderDataTable({})
 
     if (is.null(data_preload$formats_info)) {
       data_preload$formats_info <- "No info"
@@ -142,7 +158,7 @@ server <- function(input, output, session) {
                                                       onclick = 'Shiny.onInputChange(\"load_data\", this.id)'),
                              Information = data_preload$formats_info))
       return(formats[2:4])
-    }, escape = FALSE, selection = "none", options = list(pageLength = 5))
+    }, escape = FALSE, selection = "none", options = list(pageLength = 10))
 
     addClass("datasetFormatsSelected", "table-responsive")
     updateTabsetPanel(session, "tabs", "Work")
@@ -167,14 +183,23 @@ server <- function(input, output, session) {
       download_data(data_preload, format, FALSE, dataSelected)
       content <<- load_data(fileSelected)
 
+      elementColumns <- names(content)
+      elementColumns <- append(elementColumns, " ", length(elementColumns))
       updateSelectInput(session, "plotColumnSelect",
                         label = "Column",
-                        choices = names(content),
-                        selected = tail(names(content), 0))
+                        choices = elementColumns,
+                        selected = tail(elementColumns, 0))
 
       updateSelectInput(session, "plotColumn2Select",
-                        choices = names(content),
-                        selected = tail(names(content), 0))
+                        choices = elementColumns,
+                        selected = tail(elementColumns, 0))
+
+      updateSliderInput(session, "plotXlimSelect",
+                        label = "x range",
+                        value = 0,
+                        min = 0,
+                        max = (nrow(content))/ncol(content),
+                        step = 1)
 
       updateSliderInput(session, "plotYlimSelect",
                         label = "y range",
@@ -186,6 +211,9 @@ server <- function(input, output, session) {
       output$dataTable <- DT::renderDataTable(content, editable = TRUE, filter = "top")
 
       addClass("dataTable", "table-responsive")
+      removeClass("saveCompletedData", "hidden")
+      removeClass("saveFilteredData", "hidden")
+      removeClass("loadPlot", "hidden")
     }
   })
 
@@ -216,7 +244,6 @@ server <- function(input, output, session) {
       list(src = outfile,
            alt = "This is alternate text")
     }, deleteFile = TRUE)
-
   })
 
   output$saveGeneratedPlot <- downloadHandler(
@@ -224,9 +251,8 @@ server <- function(input, output, session) {
       paste("plot", ".png", sep = "")
     },
     content <- function(file) {
-      generateGraph(file)
+      plot <- generateGraph(file)
       print(plot)
-      dev.off()
     },
     contentType = "image/png"
   )
