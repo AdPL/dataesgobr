@@ -23,10 +23,11 @@ dataesgobr <- function(url = "",
     do.call(dataesgobr_from_dataframe, list(dataframe))
   } else {
     final_languages <- prepare_descriptions(description)
+    final_titles <- prepare_titles(title)
 
     value <- list(
       url = url,
-      title = title,
+      title = final_titles,
       description = final_languages,
       issued = issued,
       identifier = identifier,
@@ -56,10 +57,11 @@ dataesgobr_from_json <- function(json) {
   }
 
   final_languages <- prepare_descriptions(json$description)
+  final_titles <- prepare_titles(json["title"])
 
   value <- list(
     url = as.character(json["_about"]),
-    title = as.character(json["title"]),
+    title = final_titles,
     description = final_languages,
     formats = access,
     formats_info = info,
@@ -89,10 +91,11 @@ dataesgobr_from_dataframe <- function(dataframe) {
   }
 
   final_languages <- prepare_descriptions(dataframe$description)
+  final_titles <- prepare_titles(dataframe$title)
 
   value <- list(
     url = as.character(dataframe["_about"]),
-    title = as.character(dataframe["title"]),
+    title = final_titles,
     description = final_languages,
     formats = access,
     formats_info = info,
