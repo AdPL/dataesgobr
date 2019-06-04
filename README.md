@@ -15,6 +15,25 @@ You can install it using [remotes](https://github.com/r-lib/remotes) package.
 remotes::install_github("adpl/dataesgobr")
 ```
 
+Example
+-------
+
+Dataesgobr package provides a web GUI able to download, load, visualize an generate information using the Government's Spain API. You can launch it using the R console:
+
+``` r
+library(dataesgobr)
+runGUI()
+```
+
+It is possible to use the package in the R console too, for example obtaining datasets and loading their information:
+
+``` r
+library(dataesgobr)
+datasets <- search_by_title("consumo")
+dataset <- load_dataset(datasets, 1)
+print(dataset)
+```
+
 Information
 -----------
 
