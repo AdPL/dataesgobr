@@ -997,3 +997,39 @@ stopifnot(is.character(type), is.character(columns) || is.vector(columns))
         )
   graph
 }
+
+#' Generates an interface in R console with a question and options to answer it
+#'
+#' @param question character containing the question
+#' @param options vector containing the options to answer the question
+#'
+#' @return logical
+#'
+#' @examples {
+#' confirm_action("Write file memory.csv?")
+#' confirm_action("Do you like dataesgobr?", c("Yes" = TRUE, "No" = FALSE, "A bit" = FALSE))
+#' }
+confirm_action <- function(question, options = NULL) {
+  stopifnot(is.character(question))
+  if (is.null(options)) {
+    opt <- readline(paste(question, " (y/N) > "))
+    if (tolower(opt) == "y") {
+      return(TRUE)
+    } else {
+      return(FALSE)
+    }
+  } else {
+    count <- 0
+    for(option in names(options)) {
+      count <- count + 1
+      message(paste(count, ">" , option))
+    }
+    opt <- as.numeric(readline(paste("Select an option > ")))
+    select <- names(options[opt])
+    if(options[select] == TRUE) {
+      return(TRUE)
+    } else {
+      return(FALSE)
+    }
+  }
+}
