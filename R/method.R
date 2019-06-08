@@ -430,6 +430,8 @@ load_dataset <- function(dataframe, row = 1) {
 #' @param format The data's format to download
 #' @param all This parameter indicates if the function must download every file
 #' @param position The number in the format list
+#' @param noconfirm logical This parameter indicates if the user must confirm
+#' the downloads or no
 #'
 #' @examples
 #' library(dataesgobr)
@@ -446,7 +448,7 @@ load_dataset <- function(dataframe, row = 1) {
 #' @import httr
 #' @import readr
 #' @import stringr
-download_data <- function(x, format, all = TRUE, position = 0) {
+download_data <- function(x, format, all = TRUE, position = 0, noconfirm = FALSE) {
   stopifnot(class(x) == "dataesgobr", is.character(format), is.logical(all),
             is.numeric(position))
 
@@ -459,6 +461,7 @@ download_data <- function(x, format, all = TRUE, position = 0) {
   } else {
     extension <- get_extension(format)
     cap_speed <- progress(type = c("down", "up"), con = stdout())
+    confirm <- FALSE
     if (all) {
       position <- 0
       for(element in names(x$formats)) {
@@ -468,9 +471,13 @@ download_data <- function(x, format, all = TRUE, position = 0) {
           name <- get_name(url, format)
 
           if (!file.exists(name)) {
-            message(paste("Downloading: ", name))
-            GET(url, write_disk(name, overwrite = TRUE),
-                progress(), cap_speed)
+            if (!noconfirm)
+              confirm <- confirm_action(paste("Download and save file", name, "?"))
+            if (confirm || noconfirm) {
+              message(paste("Downloading: ", name))
+              GET(url, write_disk(name, overwrite = TRUE),
+                  progress(), cap_speed)
+            }
           }
         }
       }
@@ -479,9 +486,13 @@ download_data <- function(x, format, all = TRUE, position = 0) {
       name <- get_name(url, format)
 
       if (!file.exists(name)) {
-        message(paste("Downloading: ", name))
-        GET(url, write_disk(name, overwrite = TRUE),
-            progress(), cap_speed)
+        if (!noconfirm)
+          confirm <- confirm_action(paste("Download and save file", name, "?"))
+        if (confirm || noconfirm) {
+          message(paste("Downloading: ", name))
+          GET(url, write_disk(name, overwrite = TRUE),
+              progress(), cap_speed)
+        }
       }
     }
   }

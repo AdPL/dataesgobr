@@ -4,7 +4,7 @@
 \alias{download_data}
 \title{Download files asociate with dataesgobr object}
 \usage{
-download_data(x, format, all = TRUE, position = 0)
+download_data(x, format, all = TRUE, position = 0, noconfirm = FALSE)
 }
 \arguments{
 \item{x}{dataesgobr containing information and data from datos.gob.es}
@@ -14,6 +14,9 @@ download_data(x, format, all = TRUE, position = 0)
 \item{all}{This parameter indicates if the function must download every file}
 
 \item{position}{The number in the format list}
+
+\item{noconfirm}{logical This parameter indicates if the user must confirm
+the downloads or no}
 }
 \description{
 This function downloads the data associated with the dataset
