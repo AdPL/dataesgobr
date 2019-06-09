@@ -180,7 +180,7 @@ server <- function(input, output, session) {
         footer = modalButton("Ok")
       ))
     } else {
-      download_data(data_preload, format, FALSE, dataSelected)
+      download_data(data_preload, format, FALSE, dataSelected, noconfirm = TRUE)
       content <<- load_data(fileSelected)
 
       elementColumns <- names(content)
