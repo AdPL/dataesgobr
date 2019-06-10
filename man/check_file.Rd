@@ -4,10 +4,13 @@
 \alias{check_file}
 \title{Check if the dataset has a correct format}
 \usage{
-check_file(file)
+check_file(file, path = NULL)
 }
 \arguments{
 \item{file}{The file to check}
+
+\item{path}{character The path of the file, you need to use this parameter if
+the file is located a directory different to working directory}
 }
 \value{
 Return a logical, if the file is correct it will be TRUE, else FALSE
@@ -17,7 +20,6 @@ Check if the dataset has a correct format
 }
 \examples{
 library(dataesgobr)
-\dontrun{
-correct <- check_file("fichero.csv")
-}
+file <- system.file("extdata", "fichero.csv", package="dataesgobr")
+correct <- check_file(file)
 }

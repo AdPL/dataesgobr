@@ -4,10 +4,19 @@
 \alias{check_csv_file}
 \title{Check if the csv file has a correct format}
 \usage{
-check_csv_file(file)
+check_csv_file(file, noconfirm = FALSE, filename = NULL, path = NULL)
 }
 \arguments{
 \item{file}{The file's path}
+
+\item{noconfirm}{A logical, this parameter indicates if the user must confirm
+to change the name of the file and save in different file}
+
+\item{filename}{A character, if this parameter is present then the name of
+the file will be automatically set}
+
+\item{path}{character The path of the file, you need to use this parameter if
+the file is located a directory different to working directory}
 }
 \value{
 A logical
@@ -17,7 +26,6 @@ Check if the csv file has a correct format
 }
 \examples{
 library(dataesgobr)
-\dontrun{
+file <- system.file("extdata", "fichero.csv", package="dataesgobr")
 correct <- check_csv_file("fichero.csv")
-}
 }

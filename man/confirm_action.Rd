@@ -18,7 +18,7 @@ logical
 Generates an interface in R console with a question and options to answer it
 }
 \examples{
-{
+\dontrun{
 confirm_action("Write file memory.csv?")
 confirm_action("Do you like dataesgobr?", c("Yes" = TRUE, "No" = FALSE, "A bit" = FALSE))
 }

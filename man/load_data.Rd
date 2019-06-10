@@ -4,10 +4,13 @@
 \alias{load_data}
 \title{Load data from a file}
 \usage{
-load_data(file)
+load_data(file, path = NULL)
 }
 \arguments{
 \item{file}{A file with data previously downloaded}
+
+\item{path}{character The path of the file, you need to use this parameter if
+the file is located a directory different to working directory}
 }
 \value{
 A data.frame

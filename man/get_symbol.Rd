@@ -17,7 +17,6 @@ This function detects the delim from a csv file
 }
 \examples{
 library(dataesgobr)
-\dontrun{
-symbol <- get_publisher("fichero.csv")
-}
+file <- system.file("extdata", "fichero.csv", package="dataesgobr")
+symbol <- get_symbol(file)
 }

@@ -4,7 +4,8 @@
 \alias{download_data}
 \title{Download files asociate with dataesgobr object}
 \usage{
-download_data(x, format, all = TRUE, position = 0, noconfirm = FALSE)
+download_data(x, format, all = TRUE, position = 0, noconfirm = FALSE,
+  path = NULL)
 }
 \arguments{
 \item{x}{dataesgobr containing information and data from datos.gob.es}
@@ -17,6 +18,8 @@ download_data(x, format, all = TRUE, position = 0, noconfirm = FALSE)
 
 \item{noconfirm}{logical This parameter indicates if the user must confirm
 the downloads or no}
+
+\item{path}{character The path where the file will be save}
 }
 \description{
 This function downloads the data associated with the dataset
