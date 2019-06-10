@@ -1,6 +1,7 @@
 library(dataesgobr)
 library(dplyr)
 library(DT)
+library(shinyFiles)
 
 server <- function(input, output, session) {
   output$datasetsTable <- DT::renderDataTable({})

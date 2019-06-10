@@ -2,6 +2,7 @@ library(shiny)
 library(shinythemes)
 library(shinycssloaders)
 library(shinyjs)
+library(shinyFiles)
 library(dplyr)
 
 ui <- bootstrapPage(theme = shinytheme("paper"),
