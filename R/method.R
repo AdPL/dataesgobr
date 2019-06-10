@@ -532,6 +532,8 @@ download_data <- function(x, format, all = TRUE, position = 0, noconfirm = FALSE
 #' @description This function loads the data from the file passed like param
 #'
 #' @param file A file with data previously downloaded
+#' @param path character The path of the file, you need to use this parameter if
+#' the file is located a directory different to working directory
 #'
 #' @examples
 #' library(dataesgobr)
@@ -547,17 +549,22 @@ download_data <- function(x, format, all = TRUE, position = 0, noconfirm = FALSE
 #' @import readr
 #' @import stringr
 #' @return A data.frame
-load_data <- function(file) {
+load_data <- function(file, path = NULL) {
   stopifnot(is.character(file))
   cap_speed <- progress(type = c("down", "up"), con = stdout())
 
   format <- get_format(file)
   name <- get_name(file, format)
 
+  if (is.null(path)) {
+    path <- getwd()
+  }
+  setwd(path)
+
   switch (format,
     "text/csv" = {
       message("Loading csv file.")
-      check_csv_file(name, noconfirm = TRUE)
+      check_csv_file(name, noconfirm = TRUE, path = path)
 
       symbol <- get_symbol(name)
       content <- read_delim(name, delim = symbol)
@@ -687,9 +694,9 @@ get_publisher <- function(id) {
 #'
 #' @examples
 #' library(dataesgobr)
-#' \dontrun{
-#' symbol <- get_publisher("fichero.csv")
-#' }
+#' file <- system.file("extdata", "fichero.csv", package="dataesgobr")
+#' symbol <- get_symbol(file)
+#' @export
 #' @import readr
 #' @return The symbol as character that split the columns
 get_symbol <- function(file) {
@@ -705,22 +712,27 @@ get_symbol <- function(file) {
 #' @title Check if the dataset has a correct format
 #'
 #' @param file The file to check
+#' @param path character The path of the file, you need to use this parameter if
+#' the file is located a directory different to working directory
 #' @examples
 #' library(dataesgobr)
-#' \dontrun{
-#' correct <- check_file("fichero.csv")
-#' }
+#' file <- system.file("extdata", "fichero.csv", package="dataesgobr")
+#' correct <- check_file(file)
 #' @export
 #' @import httr
 #' @return Return a logical, if the file is correct it will be TRUE, else FALSE
-check_file <- function(file) {
+check_file <- function(file, path = NULL) {
   stopifnot(is.character(file))
+  if (is.null(path)) {
+    path <- getwd()
+  }
+  setwd(path)
   result <- FALSE
   if(file.exists(file)) {
     format <- get_format(file)
     switch(format,
            "text/csv" = {
-             result <- check_csv_file(file)
+             result <- check_csv_file(file, path = path)
            }
     )
     if (!result) {
@@ -740,16 +752,17 @@ check_file <- function(file) {
 #' to change the name of the file and save in different file
 #' @param filename A character, if this parameter is present then the name of
 #' the file will be automatically set
+#' @param path character The path of the file, you need to use this parameter if
+#' the file is located a directory different to working directory
 #'
 #' @return A logical
 #' @export
 #'
 #' @examples
 #' library(dataesgobr)
-#' \dontrun{
+#' file <- system.file("extdata", "fichero.csv", package="dataesgobr")
 #' correct <- check_csv_file("fichero.csv")
-#' }
-check_csv_file <- function(file, noconfirm = FALSE, filename = NULL) {
+check_csv_file <- function(file, noconfirm = FALSE, filename = NULL, path = NULL) {
   stopifnot(file.exists(file))
   content <- read_lines(file)
   vector_complete = vector('character')
@@ -758,6 +771,10 @@ check_csv_file <- function(file, noconfirm = FALSE, filename = NULL) {
   count_lines <- 0
   confirm <- FALSE
 
+  if(is.null(path)) {
+    path <- getwd()
+  }
+  setwd(path)
   if(file.size(file) == 0) {
     warning("The file is empty")
     correct <- FALSE
