@@ -6,8 +6,8 @@ test_that("Get file name works", {
   expect_equal(get_name("/archivo-de-datos2.csv", "text/csv"), "archivo-de-datos2.csv")
 
   expect_equal(get_name("/archivo-de-datos3.csv&rnd=1234", "text/csv"), "archivo-de-datos3.csv")
-
-  expect_equal(get_name("/data/datos1.csv", "text/csv"), "datos1.csv")
+  file <- system.file("extdata", "datos1.csv", package="dataesgobr")
+  expect_equal(get_name(file, "text/csv"), "datos1.csv")
 
 })
 
