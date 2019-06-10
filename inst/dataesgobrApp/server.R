@@ -194,7 +194,7 @@ server <- function(input, output, session) {
     } else {
       download_data(e$data_preload, format, FALSE, dataSelected, noconfirm = TRUE,
                     path = e$destinationPath)
-      e$content <- load_data(fileSelected)
+      e$content <- load_data(fileSelected, path = e$destinationPath)
 
       elementColumns <- names(e$content)
       elementColumns <- append(elementColumns, " ", length(elementColumns))
@@ -261,7 +261,7 @@ server <- function(input, output, session) {
 
   output$saveGeneratedPlot <- downloadHandler(
     filename <- function() {
-      paste(e$destinationPath, "plot", ".png", sep = "")
+      paste("plot", ".png", sep = "")
     },
     content <- function(file) {
       plot <- generateGraph(file)

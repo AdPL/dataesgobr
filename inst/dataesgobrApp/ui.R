@@ -63,7 +63,8 @@ ui <- bootstrapPage(theme = shinytheme("paper"),
                             p(textOutput("datasetKeywordsSelected"))
                           ),
                           wellPanel(
-                            h4("Download control"),
+                            h4("Load data control"),
+                            p("When you click on a 'load button', the file will be downloaded to the folder selected and automatically checked."),
                             shinyDirButton("choosedir", "Change folder", "chose"),
                             textOutput("dir")
                           )
