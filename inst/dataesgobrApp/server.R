@@ -8,21 +8,22 @@ server <- function(input, output, session) {
   addClass("saveFilteredData", "hidden")
   addClass("loadPlot", "hidden")
 
+  e <- new.env()
   if(!exists("list_themes")) {
-    list_themes <<- get_themes_from_api()$notation
+    e$list_themes <- get_themes_from_api()$notation
   }
   if(!exists("list_publishers")) {
-    list_publishers <<- get_publishers_from_api()
+    e$list_publishers <- get_publishers_from_api()
   }
 
   updateSelectInput(session, "themeSelectInput",
                     label = "Theme",
-                    choices = list_themes,
-                    selected = tail(list_themes,0))
+                    choices = e$list_themes,
+                    selected = tail(e$list_themes,0))
   updateSelectInput(session, "publisherSelectInput",
                     label = "Publisher",
-                    choices = list_publishers$prefLabel,
-                    selected = tail(list_publishers$prefLabel,0))
+                    choices = e$list_publishers$prefLabel,
+                    selected = tail(e$list_publishers$prefLabel,0))
 
   generateButton <- function(FUN, len, id, ...) {
     buttons <- character(len)
@@ -48,14 +49,14 @@ server <- function(input, output, session) {
         res = 72*pixelratio)
     if (check) {
       s <- input$dataTable_rows_selected
-      graphic_data(type, content, columns = column, dataSelected = s,
+      graphic_data(type, e$content, columns = column, dataSelected = s,
                    xlim = xrange, ylim = yrange, nClasses = nhist)
     } else {
       if (type == "boxplot" && column2 != "") {
-        graphic_data(type, content, columns = c(column, column2),
+        graphic_data(type, e$content, columns = c(column, column2),
                      xlim = xrange, ylim = yrange, nClasses = nhist)
       } else {
-        graphic_data(type, content, columns = column,
+        graphic_data(type, e$content, columns = column,
                      xlim = xrange, ylim = yrange, nClasses = nhist)
       }
     }
@@ -66,7 +67,7 @@ server <- function(input, output, session) {
     datasets <- data.frame()
 
     publisherSelected <- input$publisherSelectInput
-    publisher <- list_publishers %>% filter(list_publishers$prefLabel == publisherSelected)
+    publisher <- e$list_publishers %>% filter(e$list_publishers$prefLabel == publisherSelected)
 
     themesSelected <- input$themeSelectInput
 
@@ -96,7 +97,7 @@ server <- function(input, output, session) {
       data <- data %>% filter(data$`Description._lang` == language)
 
       output$datasetsTable <- DT::renderDataTable({data
-        datasets_downloaded <<- data
+        e$datasets_downloaded <- data
         names(data)[names(data) == "Description._value"] <- "Description"
         return(data[,c("Title", "Description", "About", "Actions")])
       }, escape = FALSE, selection = "none")
@@ -130,33 +131,33 @@ server <- function(input, output, session) {
 
   observeEvent(input$select_button, {
     datasetSelected <- as.numeric(strsplit(input$select_button, "_")[[1]][2])
-    data_preload <<- search_by_id(dataesgobr:::get_id(datasets_downloaded[datasetSelected,]$Url))
+    e$data_preload <- search_by_id(dataesgobr:::get_id(e$datasets_downloaded[datasetSelected,]$Url))
 
     showNotification(paste("Dataset loaded"), type = "message", duration = 4)
 
-    output$datasetTitleSelected <- renderText(data_preload$title)
-    output$datasetUrlSelected <- renderUI(tagList(a("Look in datos.gob.es", href = data_preload$url, target = "_blank")))
-    output$datasetDescriptionSelected <- renderText(data_preload$description)
-    output$datasetPublisherSelected <- renderText(paste("Publisher:", get_publisher(get_id(data_preload$publisher))$prefLabel))
-    output$datasetIssuedSelected <- renderText(paste("Issued: ", data_preload$issued))
-    output$datasetKeywordsSelected <- renderText(unlist(data_preload$keywords))
+    output$datasetTitleSelected <- renderText(e$data_preload$title)
+    output$datasetUrlSelected <- renderUI(tagList(a("Look in datos.gob.es", href = e$data_preload$url, target = "_blank")))
+    output$datasetDescriptionSelected <- renderText(e$data_preload$description)
+    output$datasetPublisherSelected <- renderText(paste("Publisher:", get_publisher(get_id(e$data_preload$publisher))$prefLabel))
+    output$datasetIssuedSelected <- renderText(paste("Issued: ", e$data_preload$issued))
+    output$datasetKeywordsSelected <- renderText(unlist(e$data_preload$keywords))
 
-    if (is.null(data_preload$formats_info)) {
+    if (is.null(e$data_preload$formats_info)) {
       data_preload$formats_info <- "No info"
     }
 
     output$datasetFormatsSelected <- DT::renderDataTable({
       formats <- do.call(rbind,
                          Map(data.frame,
-                             Format = names(data_preload$formats),
-                             Url = paste0("<a href='", data_preload$formats,
+                             Format = names(e$data_preload$formats),
+                             Url = paste0("<a href='", e$data_preload$formats,
                                           "' target='_blank'>Descargar</a>"),
                              Actions = generateButton(actionButton,
-                                                      length(data_preload$formats),
+                                                      length(e$data_preload$formats),
                                                       'button_',
                                                       label = "Load data",
                                                       onclick = 'Shiny.onInputChange(\"load_data\", this.id)'),
-                             Information = data_preload$formats_info))
+                             Information = e$data_preload$formats_info))
       return(formats[2:4])
     }, escape = FALSE, selection = "none", options = list(pageLength = 10))
 
@@ -166,7 +167,7 @@ server <- function(input, output, session) {
 
   observeEvent(input$load_data, {
     dataSelected <- as.numeric(strsplit(input$load_data, "_")[[1]][2])
-    fileSelected <- as.character(data_preload$formats[dataSelected][1])
+    fileSelected <- as.character(e$data_preload$formats[dataSelected][1])
 
     showNotification(paste("Loading data, please wait..."), type = "warning", duration = 4)
 
@@ -180,10 +181,10 @@ server <- function(input, output, session) {
         footer = modalButton("Ok")
       ))
     } else {
-      download_data(data_preload, format, FALSE, dataSelected, noconfirm = TRUE)
-      content <<- load_data(fileSelected)
+      download_data(e$data_preload, format, FALSE, dataSelected, noconfirm = TRUE)
+      e$content <- load_data(fileSelected)
 
-      elementColumns <- names(content)
+      elementColumns <- names(e$content)
       elementColumns <- append(elementColumns, " ", length(elementColumns))
       updateSelectInput(session, "plotColumnSelect",
                         label = "Column",
@@ -198,17 +199,17 @@ server <- function(input, output, session) {
                         label = "x range",
                         value = 0,
                         min = 0,
-                        max = (nrow(content))/ncol(content),
+                        max = (nrow(e$content))/ncol(e$content),
                         step = 1)
 
       updateSliderInput(session, "plotYlimSelect",
                         label = "y range",
                         value = 0,
                         min = 0,
-                        max = nrow(content),
+                        max = nrow(e$content),
                         step = 1)
 
-      output$dataTable <- DT::renderDataTable(content, editable = TRUE, filter = "top")
+      output$dataTable <- DT::renderDataTable(e$content, editable = TRUE, filter = "top")
 
       addClass("dataTable", "table-responsive")
       removeClass("saveCompletedData", "hidden")
@@ -219,7 +220,7 @@ server <- function(input, output, session) {
 
   output$saveCompletedData <- downloadHandler("content_complete.csv",
     content = function(file) {
-     write.csv(content, file)
+     write.csv(e$content, file)
     }
   )
 
@@ -227,7 +228,7 @@ server <- function(input, output, session) {
     content = function(file) {
       s <- input$dataTable_rows_selected
       if (length(s) > 0) {
-        write.csv(content[s, , drop = FALSE], file)
+        write.csv(e$content[s, , drop = FALSE], file)
       } else {
         showModal(modalDialog(
           title = "Error!", "You must select one row at least",
