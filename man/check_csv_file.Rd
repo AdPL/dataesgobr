@@ -27,5 +27,5 @@ Check if the csv file has a correct format
 \examples{
 library(dataesgobr)
 file <- system.file("extdata", "fichero.csv", package="dataesgobr")
-correct <- check_csv_file("fichero.csv")
+correct <- check_csv_file(file)
 }

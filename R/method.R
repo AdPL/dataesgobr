@@ -761,7 +761,7 @@ check_file <- function(file, path = NULL) {
 #' @examples
 #' library(dataesgobr)
 #' file <- system.file("extdata", "fichero.csv", package="dataesgobr")
-#' correct <- check_csv_file("fichero.csv")
+#' correct <- check_csv_file(file)
 check_csv_file <- function(file, noconfirm = FALSE, filename = NULL, path = NULL) {
   stopifnot(file.exists(file))
   content <- read_lines(file)
