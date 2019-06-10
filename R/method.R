@@ -432,6 +432,7 @@ load_dataset <- function(dataframe, row = 1) {
 #' @param position The number in the format list
 #' @param noconfirm logical This parameter indicates if the user must confirm
 #' the downloads or no
+#' @param path character The path where the file will be save
 #'
 #' @examples
 #' library(dataesgobr)
@@ -448,7 +449,8 @@ load_dataset <- function(dataframe, row = 1) {
 #' @import httr
 #' @import readr
 #' @import stringr
-download_data <- function(x, format, all = TRUE, position = 0, noconfirm = FALSE) {
+download_data <- function(x, format, all = TRUE, position = 0, noconfirm = FALSE,
+                          path = NULL) {
   stopifnot(class(x) == "dataesgobr", is.character(format), is.logical(all),
             is.numeric(position))
 
@@ -470,12 +472,26 @@ download_data <- function(x, format, all = TRUE, position = 0, noconfirm = FALSE
           url <- x$formats[position]
           name <- get_name(url, format)
 
+          if (is.null(path)) path <- getwd()
           if (!file.exists(name)) {
-            if (!noconfirm)
+            if (!noconfirm) {
               confirm <- confirm_action(paste("Download and save file", name, "?"))
+              if (confirm) {
+                confirmpath <- confirm_action(paste("Path:", path, "| Do you want to change?"))
+                if (confirmpath) {
+                  repeat {
+                    path <- as.character(readline("Path: "))
+                    message(path)
+                    correct <- confirm_action(paste0(path, "/", name, " is correct?"))
+                    if (correct) break
+                  }
+                }
+              }
+            }
             if (confirm || noconfirm) {
               message(paste("Downloading: ", name))
-              GET(url, write_disk(name, overwrite = TRUE),
+              message(paste0(path, "/", name))
+              GET(url, write_disk(paste0(path, "/", name), overwrite = TRUE),
                   progress(), cap_speed)
             }
           }
@@ -485,12 +501,26 @@ download_data <- function(x, format, all = TRUE, position = 0, noconfirm = FALSE
       url <- x$formats[position]
       name <- get_name(url, format)
 
+      if (is.null(path)) path <- getwd()
       if (!file.exists(name)) {
-        if (!noconfirm)
+        if (!noconfirm) {
           confirm <- confirm_action(paste("Download and save file", name, "?"))
+          if (confirm) {
+            confirmpath <- confirm_action(paste("Path:", path, "| Do you want to change?"))
+            if (confirmpath) {
+              repeat {
+                path <- as.character(readline("Path: "))
+                message(path)
+                correct <- confirm_action(paste0(path, "/", name, " is correct?"))
+                if (correct) break
+              }
+            }
+          }
+        }
         if (confirm || noconfirm) {
           message(paste("Downloading: ", name))
-          GET(url, write_disk(name, overwrite = TRUE),
+          message(paste0(path, "/", name))
+          GET(url, write_disk(paste0(path, "/", name), overwrite = TRUE),
               progress(), cap_speed)
         }
       }
@@ -527,7 +557,7 @@ load_data <- function(file) {
   switch (format,
     "text/csv" = {
       message("Loading csv file.")
-      check_csv_file(name)
+      check_csv_file(name, noconfirm = TRUE)
 
       symbol <- get_symbol(name)
       content <- read_delim(name, delim = symbol)
@@ -706,6 +736,10 @@ check_file <- function(file) {
 #' @title Check if the csv file has a correct format
 #'
 #' @param file The file's path
+#' @param noconfirm A logical, this parameter indicates if the user must confirm
+#' to change the name of the file and save in different file
+#' @param filename A character, if this parameter is present then the name of
+#' the file will be automatically set
 #'
 #' @return A logical
 #' @export
@@ -715,13 +749,14 @@ check_file <- function(file) {
 #' \dontrun{
 #' correct <- check_csv_file("fichero.csv")
 #' }
-check_csv_file <- function(file) {
+check_csv_file <- function(file, noconfirm = FALSE, filename = NULL) {
   stopifnot(file.exists(file))
   content <- read_lines(file)
   vector_complete = vector('character')
 
   total_lines <- 0
   count_lines <- 0
+  confirm <- FALSE
 
   if(file.size(file) == 0) {
     warning("The file is empty")
@@ -754,8 +789,25 @@ check_csv_file <- function(file) {
       message("\nFile is correct!")
       correct <- TRUE
     }
-    write.table(vector_complete, file, row.names = FALSE, col.names = FALSE,
-                quote = FALSE, fileEncoding = "UTF-8")
+
+    if(!is.null(filename)) {
+      file <- filename
+    } else {
+      update <- FALSE
+      if(!noconfirm)
+        update <- confirm_action(paste("Do you want to change the file's name?"))
+      if (update) {
+        file <- readline(paste("New name: "))
+      }
+    }
+
+    if (!noconfirm) {
+      confirm <- confirm_action(paste("Do you want to save the modified file:", file))
+    }
+    if (confirm || noconfirm) {
+      write.table(vector_complete, file, row.names = FALSE, col.names = FALSE,
+                  quote = FALSE, fileEncoding = "UTF-8")
+    }
   }
   correct
 }
@@ -1016,7 +1068,8 @@ stopifnot(is.character(type), is.character(columns) || is.vector(columns))
 #'
 #' @return logical
 #'
-#' @examples {
+#' @examples
+#' \dontrun{
 #' confirm_action("Write file memory.csv?")
 #' confirm_action("Do you like dataesgobr?", c("Yes" = TRUE, "No" = FALSE, "A bit" = FALSE))
 #' }
