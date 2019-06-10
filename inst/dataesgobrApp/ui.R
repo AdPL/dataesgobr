@@ -61,6 +61,11 @@ ui <- bootstrapPage(theme = shinytheme("paper"),
                             h5("Additional info"),
                             p(textOutput("datasetIssuedSelected")),
                             p(textOutput("datasetKeywordsSelected"))
+                          ),
+                          wellPanel(
+                            h4("Download control"),
+                            shinyDirButton("choosedir", "Change folder", "chose"),
+                            textOutput("dir")
                           )
                         ),
                         column(7,

@@ -9,6 +9,17 @@ server <- function(input, output, session) {
   addClass("loadPlot", "hidden")
 
   e <- new.env()
+  e$destinationPath <- getwd()
+
+  output$dir <- renderText(paste0("The files will be save in: ", getwd()))
+  volumes <- getVolumes()
+  shinyDirChoose(input, 'choosedir', roots = volumes, session = session)
+
+  observeEvent(input$choosedir, {
+    e$destinationPath <- parseDirPath(volumes, input$choosedir)
+    output$dir <- renderText(paste0("The files will be save in: ", e$destinationPath))
+  })
+
   if(!exists("list_themes")) {
     e$list_themes <- get_themes_from_api()$notation
   }
@@ -181,7 +192,8 @@ server <- function(input, output, session) {
         footer = modalButton("Ok")
       ))
     } else {
-      download_data(e$data_preload, format, FALSE, dataSelected, noconfirm = TRUE)
+      download_data(e$data_preload, format, FALSE, dataSelected, noconfirm = TRUE,
+                    path = e$destinationPath)
       e$content <- load_data(fileSelected)
 
       elementColumns <- names(e$content)
@@ -249,7 +261,7 @@ server <- function(input, output, session) {
 
   output$saveGeneratedPlot <- downloadHandler(
     filename <- function() {
-      paste("plot", ".png", sep = "")
+      paste(e$destinationPath, "plot", ".png", sep = "")
     },
     content <- function(file) {
       plot <- generateGraph(file)
