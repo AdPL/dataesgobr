@@ -10,9 +10,9 @@ server <- function(input, output, session) {
   addClass("loadPlot", "hidden")
 
   e <- new.env()
-  e$destinationPath <- getwd()
+  e$destinationPath <- tempdir()
 
-  output$dir <- renderText(paste0("The files will be save in: ", getwd()))
+  output$dir <- renderText(paste0("The files will be save in: ", tempdir()))
   volumes <- getVolumes()
   shinyDirChoose(input, 'choosedir', roots = volumes, session = session)
 
@@ -155,7 +155,7 @@ server <- function(input, output, session) {
     output$datasetKeywordsSelected <- renderText(unlist(e$data_preload$keywords))
 
     if (is.null(e$data_preload$formats_info)) {
-      data_preload$formats_info <- "No info"
+      e$data_preload$formats_info <- "No info"
     }
 
     output$datasetFormatsSelected <- DT::renderDataTable({
@@ -163,7 +163,7 @@ server <- function(input, output, session) {
                          Map(data.frame,
                              Format = names(e$data_preload$formats),
                              Url = paste0("<a href='", e$data_preload$formats,
-                                          "' target='_blank'>Descargar</a>"),
+                                          "' target='_blank'>Download</a>"),
                              Actions = generateButton(actionButton,
                                                       length(e$data_preload$formats),
                                                       'button_',
@@ -193,9 +193,14 @@ server <- function(input, output, session) {
         footer = modalButton("Ok")
       ))
     } else {
+      if (length(e$destinationPath) == 0) {
+        e$destinationPath <- tempdir()
+        output$dir <- renderText(paste0("The files will be save in: ", tempdir()))
+      }
       download_data(e$data_preload, format, FALSE, dataSelected, noconfirm = TRUE,
-                    path = e$destinationPath)
-      e$content <- load_data(fileSelected, path = e$destinationPath)
+                    outfile = e$destinationPath)
+      e$content <- load_data(file.path(e$destinationPath, get_name(fileSelected, format)),
+                             outfile = tempdir())
 
       elementColumns <- names(e$content)
       elementColumns <- append(elementColumns, " ", length(elementColumns))
@@ -233,7 +238,7 @@ server <- function(input, output, session) {
 
   output$saveCompletedData <- downloadHandler("content_complete.csv",
     content = function(file) {
-     write.csv(e$content, file)
+      write.csv(e$content, file)
     }
   )
 
