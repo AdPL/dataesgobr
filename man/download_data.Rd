@@ -5,21 +5,24 @@
 \title{Download files asociate with dataesgobr object}
 \usage{
 download_data(x, format, all = TRUE, position = 0, noconfirm = FALSE,
-  path = NULL)
+  overwrite = NULL, outfile = NULL)
 }
 \arguments{
-\item{x}{dataesgobr containing information and data from datos.gob.es}
+\item{x}{A dataesgobr containing information and data from datos.gob.es}
 
-\item{format}{The data's format to download}
+\item{format}{A string, the data's format to download}
 
-\item{all}{This parameter indicates if the function must download every file}
+\item{all}{A logical, this parameter indicates if the function must download every file}
 
-\item{position}{The number in the format list}
+\item{position}{Numeric, the number in the format list}
 
-\item{noconfirm}{logical This parameter indicates if the user must confirm
+\item{noconfirm}{Logical, this parameter indicates if the user must confirm
 the downloads or no}
 
-\item{path}{character The path where the file will be save}
+\item{overwrite}{A logical, if this parameter is TRUE then the downloaded file will replace
+automatically the old file if it exists}
+
+\item{outfile}{A string, the user can indicates the path to save the file}
 }
 \description{
 This function downloads the data associated with the dataset
@@ -28,10 +31,13 @@ passed like param from datos.gob.es
 \examples{
 library(dataesgobr)
 \dontrun{
-dataset <- search_by_id('l01350167-atestados-policia-local-de-las-palmas-de-gran-canaria-2013')
-download_data(dataset, "text/csv", noconfirm = TRUE)
+id <- "l01350167-atestados-policia-local-de-las-palmas-de-gran-canaria-2013"
+dataset <- search_by_id(id)
+download_data(dataset, "text/csv", noconfirm = TRUE, outfile = tempdir())
+download_data(dataset, "text/csv", noconfirm = TRUE, overwrite = TRUE, outfile = tempdir())
 download_data(dataset, "text/csv", FALSE, 3, noconfirm = TRUE)
-download_data(dataset, "application/vnd.oasis.opendocument.spreadsheet", TRUE, noconfirm = TRUE)
-download_data(dataset, "application/vnd.oasis.opendocument.spreadsheet", FALSE, position = 6, noconfirm = TRUE)
+download_data(dataset, "text/csv", FALSE, 3, noconfirm = TRUE, overwrite = TRUE)
+download_data(dataset, "application/vnd.oasis.opendocument.spreadsheet", TRUE, noconfirm = TRUE, outfile = tempdir())
+download_data(dataset, "application/vnd.oasis.opendocument.spreadsheet", FALSE, position = 6, noconfirm = TRUE, overwrite = TRUE)
 }
 }

@@ -431,101 +431,135 @@ load_dataset <- function(dataframe, row = 1) {
 #' @description This function downloads the data associated with the dataset
 #' passed like param from datos.gob.es
 #'
-#' @param x dataesgobr containing information and data from datos.gob.es
-#' @param format The data's format to download
-#' @param all This parameter indicates if the function must download every file
-#' @param position The number in the format list
-#' @param noconfirm logical This parameter indicates if the user must confirm
+#' @param x A dataesgobr containing information and data from datos.gob.es
+#' @param format A string, the data's format to download
+#' @param all A logical, this parameter indicates if the function must download every file
+#' @param position Numeric, the number in the format list
+#' @param noconfirm Logical, this parameter indicates if the user must confirm
 #' the downloads or no
-#' @param path character The path where the file will be save
+#' @param overwrite A logical, if this parameter is TRUE then the downloaded file will replace
+#' automatically the old file if it exists
+#' @param outfile A string, the user can indicates the path to save the file
 #'
 #' @examples
 #' library(dataesgobr)
 #' \dontrun{
-#' dataset <- search_by_id('l01350167-atestados-policia-local-de-las-palmas-de-gran-canaria-2013')
-#' download_data(dataset, "text/csv", noconfirm = TRUE)
+#' id <- "l01350167-atestados-policia-local-de-las-palmas-de-gran-canaria-2013"
+#' dataset <- search_by_id(id)
+#' download_data(dataset, "text/csv", noconfirm = TRUE, outfile = tempdir())
+#' download_data(dataset, "text/csv", noconfirm = TRUE, overwrite = TRUE, outfile = tempdir())
 #' download_data(dataset, "text/csv", FALSE, 3, noconfirm = TRUE)
-#' download_data(dataset, "application/vnd.oasis.opendocument.spreadsheet", TRUE, noconfirm = TRUE)
-#' download_data(dataset, "application/vnd.oasis.opendocument.spreadsheet", FALSE, position = 6, noconfirm = TRUE)
+#' download_data(dataset, "text/csv", FALSE, 3, noconfirm = TRUE, overwrite = TRUE)
+#' download_data(dataset, "application/vnd.oasis.opendocument.spreadsheet", TRUE, noconfirm = TRUE, outfile = tempdir())
+#' download_data(dataset, "application/vnd.oasis.opendocument.spreadsheet", FALSE, position = 6, noconfirm = TRUE, overwrite = TRUE)
 #' }
 #' @export
 #' @import httr
 #' @import readr
 #' @import stringr
 download_data <- function(x, format, all = TRUE, position = 0, noconfirm = FALSE,
-                          path = NULL) {
+                          overwrite = NULL, outfile = NULL) {
   stopifnot(class(x) == "dataesgobr", is.character(format), is.logical(all),
             is.numeric(position))
-
-  stopifnot(class(x) == 'dataesgobr')
 
   if (is.na(x$formats[format])) {
     message(paste("Error:", format,"format not found."))
     message("If you need to know the available formats about a dataset")
     message("you can use get_available_formats function.")
   } else {
+    if (is.null(outfile)) {
+      outfile <- tempdir()
+    }
+
+    path <- outfile
+
+    if (is.null(overwrite)) {
+      confirmOVERWRITE <- FALSE
+    } else {
+      confirmOVERWRITE <- overwrite
+    }
+
     extension <- get_extension(format)
     cap_speed <- progress(type = c("down", "up"), con = stdout())
-    confirm <- FALSE
-    if (all) {
-      position <- 0
+
+    if (all && position == 0) {
       for(element in names(x$formats)) {
         position <- position + 1
         if (format == element) {
           url <- x$formats[position]
           name <- get_name(url, format)
 
-          if (is.null(path)) path <- getwd()
-          if (!file.exists(name)) {
-            if (!noconfirm) {
-              confirm <- confirm_action(paste("Download and save file", name, "?"))
-              if (confirm) {
-                confirmpath <- confirm_action(paste("Path:", path, "| Do you want to change?"))
-                if (confirmpath) {
-                  repeat {
-                    path <- as.character(readline("Path: "))
-                    message(path)
-                    correct <- confirm_action(paste0(path, "/", name, " is correct?"))
-                    if (correct) break
-                  }
-                }
+          if (!noconfirm) {
+            confirmPATH <- confirm_action(paste0("The file will be save in: ", outfile))
+            if (!confirmPATH) {
+              path <- readline("Outfile: ")
+            } else {
+              path <- outfile
+            }
+            confirmNAME <- confirm_action(paste0("Name: ", name, " | Change name?"))
+            if (confirmNAME) {
+              name <- readline("New name: ")
+            }
+            if (file.exists(file.path(path, name))) {
+              if (is.null(overwrite)) {
+                confirmOVERWRITE <- confirm_action("The file already exists, overwrite?")
               }
+            } else {
+                confirmOVERWRITE <- TRUE
             }
-            if (confirm || noconfirm) {
-              message(paste("Downloading: ", name))
-              message(paste0(path, "/", name))
-              GET(url, write_disk(paste0(path, "/", name), overwrite = TRUE),
-                  progress(), cap_speed)
+          } else {
+            if (!file.exists(file.path(path, name))) {
+              confirmOVERWRITE = TRUE
             }
+          }
+
+          if (confirmOVERWRITE) {
+            route <- paste0(path, "/", name)
+            GET(url, write_disk(route, overwrite = confirmOVERWRITE), progress(),
+                cap_speed)
+          } else {
+            message("Download canceled, the file already exists, set overwrite TRUE")
           }
         }
       }
     } else {
-      url <- x$formats[position]
-      name <- get_name(url, format)
+      if (format == names(x$formats)[position]) {
+        url <- x$formats[position]
+        name <- get_name(url, format)
 
-      if (is.null(path)) path <- getwd()
-      if (!file.exists(name)) {
         if (!noconfirm) {
-          confirm <- confirm_action(paste("Download and save file", name, "?"))
-          if (confirm) {
-            confirmpath <- confirm_action(paste("Path:", path, "| Do you want to change?"))
-            if (confirmpath) {
-              repeat {
-                path <- as.character(readline("Path: "))
-                message(path)
-                correct <- confirm_action(paste0(path, "/", name, " is correct?"))
-                if (correct) break
-              }
+          confirmPATH <- confirm_action(paste0("The file will be save in: ", outfile))
+          if (!confirmPATH) {
+            path <- readline("Outfile: ")
+          } else {
+            path <- outfile
+          }
+          confirmNAME <- confirm_action(paste0("Name: ", name, " | Change name?"))
+          if (confirmNAME) {
+            name <- readline("New name: ")
+          }
+          if (file.exists(file.path(path, name))) {
+            if (is.null(overwrite)) {
+              confirmOVERWRITE <- confirm_action("The file already exists, overwrite?")
             }
+          } else {
+            confirmOVERWRITE <- TRUE
+          }
+        } else {
+          if (!file.exists(file.path(path, name))) {
+            confirmOVERWRITE = TRUE
           }
         }
-        if (confirm || noconfirm) {
-          message(paste("Downloading: ", name))
-          message(paste0(path, "/", name))
-          GET(url, write_disk(paste0(path, "/", name), overwrite = TRUE),
-              progress(), cap_speed)
+
+        if (confirmOVERWRITE) {
+          route <- paste0(path, "/", name)
+          GET(url, write_disk(route, overwrite = confirmOVERWRITE), progress(),
+              cap_speed)
+        } else {
+          message("Download canceled, the file already exists, set overwrite TRUE")
         }
+      } else {
+        warning("The file's format does not match with the parameter format.")
       }
     }
   }
