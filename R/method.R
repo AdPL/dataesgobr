@@ -110,6 +110,9 @@ search_by_spatial <- function(spatial1, spatial2, numentry = 50, page = 0) {
             is.numeric(page))
   data <- data.frame()
 
+  spatial1 <- chartr('áéíóú', 'aeiou', spatial1)
+  spatial2 <- chartr('áéíóú', 'aeiou', spatial2)
+
   search <- make_url("spatial", paste0(spatial1, "/", spatial2),
                       c("pagesize" = numentry, "page" = page))
   response <- jsonlite::fromJSON(search)
