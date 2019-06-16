@@ -21,7 +21,7 @@ Load dataset from a data.frame
 }
 \examples{
 library(dataesgobr)
-\dontrun{
+\donttest{
 datasets <- search_by_title('salud')
 dataset <- load_dataset(datasets)
 

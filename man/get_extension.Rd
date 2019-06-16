@@ -17,11 +17,6 @@ Get the extension that matches with the format passed like parameter
 }
 \examples{
 library(dataesgobr)
-format <- get_extension("text/csv")
-
-format
-
-format <- get_extension("application/pdf")
-
-format
+extension <- get_extension("text/csv")
+extension <- get_extension("application/pdf")
 }

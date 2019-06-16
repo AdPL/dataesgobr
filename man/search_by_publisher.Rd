@@ -23,10 +23,10 @@ as data.frame
 }
 \examples{
 library(dataesgobr)
-\dontrun{
+\donttest{
 url <- make_url("publisher", 'L01280066')
 publisherID <- get_id(url)
 datasets <- search_by_publisher(publisherID)
-datasets <- search_by_publisher('L01280066')
+datasets2 <- search_by_publisher('L01280066')
 }
 }

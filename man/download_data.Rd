@@ -30,7 +30,7 @@ passed like param from datos.gob.es
 }
 \examples{
 library(dataesgobr)
-\dontrun{
+\donttest{
 id <- "l01350167-atestados-policia-local-de-las-palmas-de-gran-canaria-2013"
 dataset <- search_by_id(id)
 download_data(dataset, "text/csv", noconfirm = TRUE, outfile = tempdir())

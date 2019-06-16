@@ -21,7 +21,7 @@ Filter data.frame by keywords using keywords param
 }
 \examples{
 library(dataesgobr)
-\dontrun{
+\donttest{
 datasets <- search_by_title('salud')
 datasetsFiltered <- filter_by_keywords(datasets, 'enfermedad')
 }

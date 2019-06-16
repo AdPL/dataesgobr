@@ -16,8 +16,8 @@ to change the name of the file and save in different file}
 \item{filename}{A character, if this parameter is present then the name of
 the file will be automatically set}
 
-\item{path}{character The path of the file, you need to use this parameter if
-the file is located a directory different to working directory}
+\item{outfile}{A character the path where the file will be save if it need to
+be modify, NULL to use the file's directory}
 }
 \value{
 A logical
@@ -29,6 +29,7 @@ Check if the csv file has a correct format
 library(dataesgobr)
 file <- system.file("extdata", "fichero.csv", package="dataesgobr")
 correct <- check_csv_file(file)
+correct <- check_csv_file(file, outfile = tempdir())
 correct <- check_csv_file(file, noconfirm = TRUE)
 correct <- check_csv_file(file, noconfirm = TRUE, filename = "nuevo.csv")
 correct <- check_csv_file(file, noconfirm = TRUE, outfile = tempdir())

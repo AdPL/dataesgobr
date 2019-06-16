@@ -23,7 +23,7 @@ the parameters passed
 }
 \examples{
 library(dataesgobr)
-\dontrun{
+\donttest{
 datasets <- search_by('atestados', 'salud', 'L01280066')
 }
 }

@@ -18,7 +18,7 @@ Represent keywords in a plot
 }
 \examples{
 library(dataesgobr)
-\dontrun{
+\donttest{
 datasets <- search_by_title('salud')
 keywords <- get_all_keywords(datasets)
 graphic_keywords(keywords, 'circular', 10)

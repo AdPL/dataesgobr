@@ -7,10 +7,12 @@
 check_file(file, noconfirm = FALSE, outfile = NULL)
 }
 \arguments{
-\item{file}{The file to check}
+\item{file}{A string The file to check}
 
-\item{path}{character The path of the file, you need to use this parameter if
-the file is located a directory different to working directory}
+\item{noconfirm}{A logical, Use TRUE to skip confirmation about file writing}
+
+\item{outfile}{A character the path where the file will be save if it need to
+be modify, NULL to use the file's directory}
 }
 \value{
 Return a logical, if the file is correct it will be TRUE, else FALSE

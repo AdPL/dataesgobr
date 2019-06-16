@@ -21,7 +21,7 @@ Filter data.frame by description using q param
 }
 \examples{
 library(dataesgobr)
-\dontrun{
+\donttest{
 datasets <- search_by_title('salud')
 datasetsFiltered <- filter_by_description(datasets, 'salud')
 }

@@ -18,10 +18,5 @@ Get the format that matches with the extension passed like parameter
 \examples{
 library(dataesgobr)
 format <- get_format(".csv")
-
-format
-
 format <- get_format(".pdf")
-
-format
 }

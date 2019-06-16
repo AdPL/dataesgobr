@@ -23,7 +23,7 @@ as data.frame
 }
 \examples{
 library(dataesgobr)
-\dontrun{
+\donttest{
 datasetsPublic <- search_by_theme('sector-publico', 20)
 datasetsSalud <- search_by_theme('salud', page = 2)
 }

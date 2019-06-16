@@ -4,13 +4,13 @@
 \alias{load_data}
 \title{Load data from a file}
 \usage{
-load_data(file, filename = NULL, outfile = NULL)
+load_data(file, outfile = NULL)
 }
 \arguments{
 \item{file}{A file with data previously downloaded}
 
-\item{path}{character The path of the file, you need to use this parameter if
-the file is located a directory different to working directory}
+\item{outfile}{A character the path where the file will be save if it need to
+be modify, NULL to use the file's directory}
 }
 \value{
 A data.frame
@@ -20,9 +20,9 @@ This function loads the data from the file passed like param
 }
 \examples{
 library(dataesgobr)
-\dontrun{
+\donttest{
 file <- system.file("extdata", "fichero.csv", package = "dataesgobr")
-load_data(file, filename = "nuevo.csv")
+load_data(file)
 load_data(file, outfile = tempdir())
 }
 }

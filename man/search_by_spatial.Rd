@@ -25,7 +25,7 @@ the results are returned as data.frame
 }
 \examples{
 library(dataesgobr)
-\dontrun{
+\donttest{
 datasetsAndalucia <- search_by_spatial('Autonomia', 'Andalucia')
 datasetsJaen <- search_by_spatial('Provincia', 'Jaen')
 }

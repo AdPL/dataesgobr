@@ -27,7 +27,7 @@ Filter data.frame using params passed
 }
 \examples{
 library(dataesgobr)
-\dontrun{
+\donttest{
 datasets <- search_by_title('salud')
 datasetsFiltered <- filter_by(datasets, 'salud', 'vacuna')
 datasetsFiltered2 <- filter_by(datasets, 'salud', keywords = 'enfermedad')

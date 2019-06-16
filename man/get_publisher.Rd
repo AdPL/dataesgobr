@@ -17,7 +17,7 @@ Get the publisher of the dataset
 }
 \examples{
 library(dataesgobr)
-\dontrun{
+\donttest{
 publisher <- get_publisher("L01280066")
 }
 }

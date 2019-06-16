@@ -9,7 +9,7 @@
 #'
 #' @examples
 #' library(dataesgobr)
-#' \dontrun{
+#' \donttest{
 #' # Return first 50 matches that contain puente in their title
 #' mydataesgobr <- search_by_title('puente')
 #'
@@ -17,7 +17,7 @@
 #' mydataesgobr <- search_by_title('gasto', 78)
 #'
 #' # Return the first 78 matches that contain gasto in their title found in the
-#' second page (number 1)
+#' # second page (number 1)
 #' mydataesgobr <- search_by_title('gasto', 78, page = 1)
 #' }
 #' @export
@@ -39,7 +39,7 @@ search_by_title <- function(title, numentry = 50, page = 0) {
 #' @param id A string
 #' @examples
 #' library(dataesgobr)
-#' \dontrun{
+#' \donttest{
 #' dataset <- search_by_id('l01280066-presupuestos-20141')
 #' dataset <- search_by_id('https://datos.gob.es/es/catalogo/l01280066-tramites-salud1')
 #' }
@@ -71,7 +71,7 @@ search_by_id <- function(id) {
 #' @param page The number of page to see, the first page is 0
 #' @examples
 #' library(dataesgobr)
-#' \dontrun{
+#' \donttest{
 #' datasetsPublic <- search_by_theme('sector-publico', 20)
 #' datasetsSalud <- search_by_theme('salud', page = 2)
 #' }
@@ -99,7 +99,7 @@ search_by_theme <- function(theme, numentry = 50, page = 0) {
 #'
 #' @examples
 #' library(dataesgobr)
-#' \dontrun{
+#' \donttest{
 #' datasetsAndalucia <- search_by_spatial('Autonomia', 'Andalucia')
 #' datasetsJaen <- search_by_spatial('Provincia', 'Jaen')
 #' }
@@ -110,8 +110,8 @@ search_by_spatial <- function(spatial1, spatial2, numentry = 50, page = 0) {
             is.numeric(page))
   data <- data.frame()
 
-  spatial1 <- chartr('áéíóú', 'aeiou', spatial1)
-  spatial2 <- chartr('áéíóú', 'aeiou', spatial2)
+  spatial1 <- stri_trans_general(spatial1, "Latin-ASCII")
+  spatial2 <- stri_trans_general(spatial2, "Latin-ASCII")
 
   search <- make_url("spatial", paste0(spatial1, "/", spatial2),
                       c("pagesize" = numentry, "page" = page))
@@ -131,11 +131,11 @@ search_by_spatial <- function(spatial1, spatial2, numentry = 50, page = 0) {
 #'
 #' @examples
 #' library(dataesgobr)
-#' \dontrun{
+#' \donttest{
 #' url <- make_url("publisher", 'L01280066')
 #' publisherID <- get_id(url)
 #' datasets <- search_by_publisher(publisherID)
-#' datasets <- search_by_publisher('L01280066')
+#' datasets2 <- search_by_publisher('L01280066')
 #' }
 #' @export
 #' @return A data.frame
@@ -158,7 +158,7 @@ search_by_publisher <- function(publisher, numentry = 50, page = 0) {
 #'
 #' @examples
 #' library(dataesgobr)
-#' \dontrun{
+#' \donttest{
 #' datasets <- search_by('atestados', 'salud', 'L01280066')
 #' }
 #' @export
@@ -205,7 +205,7 @@ search_by <- function(title, theme, publisher) {
 #'
 #' @examples
 #' library(dataesgobr)
-#' \dontrun{
+#' \donttest{
 #' datasets <- search_by_title('salud')
 #' datasetsFiltered <- filter_by_title(datasets, 'encuesta')
 #' }
@@ -236,7 +236,7 @@ filter_by_title <- function(data, q, quiet = FALSE) {
 #'
 #' @examples
 #' library(dataesgobr)
-#' \dontrun{
+#' \donttest{
 #' datasets <- search_by_title('salud')
 #' datasetsFiltered <- filter_by_description(datasets, 'salud')
 #' }
@@ -267,7 +267,7 @@ filter_by_description <- function(data, q, quiet = FALSE) {
 #'
 #' @examples
 #' library(dataesgobr)
-#' \dontrun{
+#' \donttest{
 #' datasets <- search_by_title('salud')
 #' datasetsFiltered <- filter_by_keywords(datasets, 'enfermedad')
 #' }
@@ -300,7 +300,7 @@ filter_by_keywords <- function(data, keywords, quiet = FALSE) {
 #'
 #' @examples
 #' library(dataesgobr)
-#' \dontrun{
+#' \donttest{
 #' datasets <- search_by_title('salud')
 #' datasetsFiltered <- filter_by(datasets, 'salud', 'vacuna')
 #' datasetsFiltered2 <- filter_by(datasets, 'salud', keywords = 'enfermedad')
@@ -341,7 +341,7 @@ filter_by <- function(data, title = NULL, description = NULL, keywords = NULL,
 #'
 #' @examples
 #' library(dataesgobr)
-#' \dontrun{
+#' \donttest{
 #' datasets <- search_by_title('salud')
 #' keywords <- get_all_keywords(datasets)
 #' graphic_keywords(keywords, 'circular', 10)
@@ -378,7 +378,7 @@ graphic_keywords <- function(list, type = "circular", nrepeats = 0) {
 #'
 #' @examples
 #' library(dataesgobr)
-#' \dontrun{
+#' \donttest{
 #' datasets <- search_by_title('consumo')
 #' keywords <- get_all_keywords(datasets)
 #' }
@@ -410,7 +410,7 @@ get_all_keywords <- function(data) {
 #'
 #' @examples
 #' library(dataesgobr)
-#' \dontrun{
+#' \donttest{
 #' datasets <- search_by_title('salud')
 #' dataset <- load_dataset(datasets)
 #'
@@ -443,7 +443,7 @@ load_dataset <- function(dataframe, row = 1) {
 #'
 #' @examples
 #' library(dataesgobr)
-#' \dontrun{
+#' \donttest{
 #' id <- "l01350167-atestados-policia-local-de-las-palmas-de-gran-canaria-2013"
 #' dataset <- search_by_id(id)
 #' download_data(dataset, "text/csv", noconfirm = TRUE, outfile = tempdir())
@@ -569,14 +569,14 @@ download_data <- function(x, format, all = TRUE, position = 0, noconfirm = FALSE
 #' @description This function loads the data from the file passed like param
 #'
 #' @param file A file with data previously downloaded
-#' @param path character The path of the file, you need to use this parameter if
-#' the file is located a directory different to working directory
+#' @param outfile A character the path where the file will be save if it need to
+#' be modify, NULL to use the file's directory
 #'
 #' @examples
 #' library(dataesgobr)
-#' \dontrun{
+#' \donttest{
 #' file <- system.file("extdata", "fichero.csv", package = "dataesgobr")
-#' load_data(file, filename = "nuevo.csv")
+#' load_data(file)
 #' load_data(file, outfile = tempdir())
 #' }
 #' @export
@@ -584,16 +584,12 @@ download_data <- function(x, format, all = TRUE, position = 0, noconfirm = FALSE
 #' @import readr
 #' @import stringr
 #' @return A data.frame
-load_data <- function(file, filename = NULL, outfile = NULL) {
+load_data <- function(file, outfile = NULL) {
   stopifnot(is.character(file))
   cap_speed <- progress(type = c("down", "up"), con = stdout())
 
   format <- get_format(file)
-  if (is.null(filename)) {
-    name <- get_name(file, format)
-  } else {
-    name <- filename
-  }
+  name <- get_name(file, format)
 
   if (is.null(outfile)) {
     outfile <- tempdir()
@@ -602,7 +598,7 @@ load_data <- function(file, filename = NULL, outfile = NULL) {
   switch (format,
     "text/csv" = {
       message("Loading csv file.")
-      check_csv_file(file, noconfirm = TRUE, filename = name, outfile = outfile)
+      check_csv_file(file, noconfirm = TRUE, outfile = outfile)
 
       symbol <- get_symbol(file)
       content <- read_delim(file, delim = symbol)
@@ -666,12 +662,7 @@ get_name <- function(url, format) {
 #' @examples
 #' library(dataesgobr)
 #' format <- get_format(".csv")
-#'
-#' format
-#'
 #' format <- get_format(".pdf")
-#'
-#' format
 #' @return A string
 #' @export
 get_format <- function(ext) {
@@ -689,13 +680,8 @@ get_format <- function(ext) {
 #'
 #' @examples
 #' library(dataesgobr)
-#' format <- get_extension("text/csv")
-#'
-#' format
-#'
-#' format <- get_extension("application/pdf")
-#'
-#' format
+#' extension <- get_extension("text/csv")
+#' extension <- get_extension("application/pdf")
 #' @return A string
 #' @export
 get_extension <- function(format) {
@@ -711,7 +697,7 @@ get_extension <- function(format) {
 #'
 #' @examples
 #' library(dataesgobr)
-#' \dontrun{
+#' \donttest{
 #' publisher <- get_publisher("L01280066")
 #' }
 #' @import dplyr
@@ -749,9 +735,10 @@ get_symbol <- function(file) {
 
 #' @title Check if the dataset has a correct format
 #'
-#' @param file The file to check
-#' @param path character The path of the file, you need to use this parameter if
-#' the file is located a directory different to working directory
+#' @param file A string The file to check
+#' @param noconfirm A logical, Use TRUE to skip confirmation about file writing
+#' @param outfile A character the path where the file will be save if it need to
+#' be modify, NULL to use the file's directory
 #' @examples
 #' library(dataesgobr)
 #' file <- system.file("extdata", "fichero.csv", package="dataesgobr")
@@ -771,7 +758,6 @@ check_file <- function(file, noconfirm = FALSE, outfile = NULL) {
     format <- get_format(file)
     switch(format,
            "text/csv" = {
-             message("checking")
              result <- check_csv_file(file, noconfirm = noconfirm,
                                       outfile = outfile)
            }
@@ -793,8 +779,8 @@ check_file <- function(file, noconfirm = FALSE, outfile = NULL) {
 #' to change the name of the file and save in different file
 #' @param filename A character, if this parameter is present then the name of
 #' the file will be automatically set
-#' @param path character The path of the file, you need to use this parameter if
-#' the file is located a directory different to working directory
+#' @param outfile A character the path where the file will be save if it need to
+#' be modify, NULL to use the file's directory
 #'
 #' @return A logical
 #' @export
@@ -803,6 +789,7 @@ check_file <- function(file, noconfirm = FALSE, outfile = NULL) {
 #' library(dataesgobr)
 #' file <- system.file("extdata", "fichero.csv", package="dataesgobr")
 #' correct <- check_csv_file(file)
+#' correct <- check_csv_file(file, outfile = tempdir())
 #' correct <- check_csv_file(file, noconfirm = TRUE)
 #' correct <- check_csv_file(file, noconfirm = TRUE, filename = "nuevo.csv")
 #' correct <- check_csv_file(file, noconfirm = TRUE, outfile = tempdir())
@@ -885,7 +872,7 @@ check_csv_file <- function(file, noconfirm = FALSE, filename = NULL, outfile = N
 #' @export
 #' @examples
 #' library(dataesgobr)
-#' \dontrun{
+#' \donttest{
 #' dataesgobrObject <- search_by_id('l01350167-atestados-policia-local-de-las-palmas-de-gran-canaria-2013')
 #' formats <- get_available_formats(dataesgobrObject)
 #' formats
@@ -916,7 +903,7 @@ get_available_formats <- function(data) {
 #' @export
 #' @examples
 #' library(dataesgobr)
-#' \dontrun{
+#' \donttest{
 #' dataesgobrObject <- search_by_id('l01350167-atestados-policia-local-de-las-palmas-de-gran-canaria-2013')
 #' formats <- get_formats(dataesgobrObject)
 #' formats
@@ -1089,11 +1076,11 @@ make_url <- function(field, request, params = NULL) {
 #' @param nClasses Split data in classes to draw in bloxplot
 #' @examples
 #' library(dataesgobr)
-#' \dontrun{
+#' \donttest{
 #' datasets <- search_by_title('atestados')
 #' dataset <- load_dataset(datasets)
 #' download_data(dataset, "text/csv", TRUE, noconfirm = TRUE)
-#' content <- load_data("DB_HER_1999.csv")
+#' content <- load_data(file.path(tempdir(), "DB_HER_1999.csv"))
 #' graph <- graphic_data("plot", content, "SEXO", xlim = 3, ylim = 2000)
 #' graph
 #' }
@@ -1138,7 +1125,7 @@ stopifnot(is.character(type), is.character(columns) || is.vector(columns))
 #'
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' confirm_action("Write file memory.csv?")
 #' confirm_action("Do you like dataesgobr?", c("Yes" = TRUE, "No" = FALSE, "A bit" = FALSE))
 #' }

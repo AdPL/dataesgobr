@@ -17,7 +17,7 @@ Obtain keywords in data.frame with the number of ocurrences
 }
 \examples{
 library(dataesgobr)
-\dontrun{
+\donttest{
 datasets <- search_by_title('consumo')
 keywords <- get_all_keywords(datasets)
 }

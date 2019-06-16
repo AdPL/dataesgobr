@@ -24,7 +24,7 @@ as data.frame
 }
 \examples{
 library(dataesgobr)
-\dontrun{
+\donttest{
 # Return first 50 matches that contain puente in their title
 mydataesgobr <- search_by_title('puente')
 
@@ -32,7 +32,7 @@ mydataesgobr <- search_by_title('puente')
 mydataesgobr <- search_by_title('gasto', 78)
 
 # Return the first 78 matches that contain gasto in their title found in the
-second page (number 1)
+# second page (number 1)
 mydataesgobr <- search_by_title('gasto', 78, page = 1)
 }
 }

@@ -19,7 +19,7 @@ information and repetitions for each one
 }
 \examples{
 library(dataesgobr)
-\dontrun{
+\donttest{
 dataesgobrObject <- search_by_id('l01350167-atestados-policia-local-de-las-palmas-de-gran-canaria-2013')
 formats <- get_available_formats(dataesgobrObject)
 formats
