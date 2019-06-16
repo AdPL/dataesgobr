@@ -20,7 +20,8 @@ each one
 \examples{
 library(dataesgobr)
 \dontrun{
-formats <- get_formats("dataesgobrObject")
+dataesgobrObject <- search_by_id('l01350167-atestados-policia-local-de-las-palmas-de-gran-canaria-2013')
+formats <- get_formats(dataesgobrObject)
 formats
 }
 }

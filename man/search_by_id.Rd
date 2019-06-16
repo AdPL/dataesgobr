@@ -20,7 +20,7 @@ dataset id
 \examples{
 library(dataesgobr)
 \dontrun{
-datasets <- search_by_id('l01280066-presupuestos-20141')
-datasets <- search_by_id('https://datos.gob.es/es/catalogo/l01280066-tramites-salud1')
+dataset <- search_by_id('l01280066-presupuestos-20141')
+dataset <- search_by_id('https://datos.gob.es/es/catalogo/l01280066-tramites-salud1')
 }
 }

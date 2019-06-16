@@ -21,7 +21,7 @@ format <- get_extension("text/csv")
 
 format
 
-format <- get_format("application/pdf")
+format <- get_extension("application/pdf")
 
 format
 }

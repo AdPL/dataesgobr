@@ -21,10 +21,8 @@ This function loads the data from the file passed like param
 \examples{
 library(dataesgobr)
 \dontrun{
-datasets <- search_by_title('salud')
-dataset <- load_dataset(datasets)
-
-download_data(dataset, "text/csv")
-load_data('salud-2018.csv')
+dataset <- search_by_id('l01350167-atestados-policia-local-de-las-palmas-de-gran-canaria-2013')
+download_data(dataset, "text/csv", noconfirm = TRUE)
+load_data('DB_VEH_2013.csv')
 }
 }

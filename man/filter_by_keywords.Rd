@@ -23,6 +23,6 @@ Filter data.frame by keywords using keywords param
 library(dataesgobr)
 \dontrun{
 datasets <- search_by_title('salud')
-datasetsFiltered <- filter_by_keywords(datasets, 'vacuna')
+datasetsFiltered <- filter_by_keywords(datasets, 'enfermedad')
 }
 }

@@ -21,10 +21,10 @@ library(dataesgobr)
 \dontrun{
 datasets <- search_by_title('salud')
 keywords <- get_all_keywords(datasets)
-graphic_keywords(keywords, 'circular', '5')
+graphic_keywords(keywords, 'circular', 10)
 
 datasets <- search_by_title('salud')
 keywords <- get_all_keywords(datasets)
-graphic_keywords(keywords, 'barras', '7')
+graphic_keywords(keywords, 'barras', 11)
 }
 }

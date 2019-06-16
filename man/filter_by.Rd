@@ -29,7 +29,7 @@ Filter data.frame using params passed
 library(dataesgobr)
 \dontrun{
 datasets <- search_by_title('salud')
-datasetsFiltered <- filter_by_title(datasets, '2018', 'vacuna')
-datasetsFiltered2 <- filter_by_title(datasets, '2018', keywords = 'vacuna')
+datasetsFiltered <- filter_by(datasets, 'salud', 'vacuna')
+datasetsFiltered2 <- filter_by(datasets, 'salud', keywords = 'enfermedad')
 }
 }

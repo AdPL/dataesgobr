@@ -26,7 +26,7 @@ the results are returned as data.frame
 \examples{
 library(dataesgobr)
 \dontrun{
-datasetsSpain <- search_by_spatial('Pais', 'España')
-datasetsJaen <- search_by_id('Provincia', 'Jaén')
+datasetsAndalucia <- search_by_spatial('Autonomia', 'Andalucia')
+datasetsJaen <- search_by_spatial('Provincia', 'Jaen')
 }
 }

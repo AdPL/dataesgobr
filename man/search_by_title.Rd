@@ -26,13 +26,13 @@ as data.frame
 library(dataesgobr)
 \dontrun{
 # Return first 50 matches that contain puente in their title
-mydataesgobr <- dataesgobr_search_by_title('puente')
+mydataesgobr <- search_by_title('puente')
 
-# Return the first 78 matches that contain puente in their title
-mydataesgobr <- dataesgobr_search_by_title('puente', 78)
+# Return the first 78 matches that contain gasto in their title
+mydataesgobr <- search_by_title('gasto', 78)
 
-# Return the first 78 matches that contain puente in their title found in the
+# Return the first 78 matches that contain gasto in their title found in the
 second page (number 1)
-mydataesgobr <- dataesgobr_search_by_title('puente', 78, page = 1)
+mydataesgobr <- search_by_title('gasto', 78, page = 1)
 }
 }

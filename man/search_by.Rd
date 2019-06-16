@@ -24,6 +24,6 @@ the parameters passed
 \examples{
 library(dataesgobr)
 \dontrun{
-datasets <- search_by('atestados', 'salud', 'Jaén')
+datasets <- search_by('atestados', 'salud', 'L01280066')
 }
 }

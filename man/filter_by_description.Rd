@@ -23,6 +23,6 @@ Filter data.frame by description using q param
 library(dataesgobr)
 \dontrun{
 datasets <- search_by_title('salud')
-datasetsFiltered <- filter_by_description(datasets, '2018')
+datasetsFiltered <- filter_by_description(datasets, 'salud')
 }
 }

@@ -24,8 +24,9 @@ as data.frame
 \examples{
 library(dataesgobr)
 \dontrun{
-url <- make_url("publisher", L01280066)
-datasets <- search_by_publisher(url)
+url <- make_url("publisher", 'L01280066')
+publisherID <- get_id(url)
+datasets <- search_by_publisher(publisherID)
 datasets <- search_by_publisher('L01280066')
 }
 }

@@ -24,7 +24,7 @@ as data.frame
 \examples{
 library(dataesgobr)
 \dontrun{
-datasetsPublic <- search_by_id('sector-publico', 20)
-datasetsSalud <- search_by_id('salud', page = 2)
+datasetsPublic <- search_by_theme('sector-publico', 20)
+datasetsSalud <- search_by_theme('salud', page = 2)
 }
 }

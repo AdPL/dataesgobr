@@ -11,14 +11,14 @@
 #' library(dataesgobr)
 #' \dontrun{
 #' # Return first 50 matches that contain puente in their title
-#' mydataesgobr <- dataesgobr_search_by_title('puente')
+#' mydataesgobr <- search_by_title('puente')
 #'
-#' # Return the first 78 matches that contain puente in their title
-#' mydataesgobr <- dataesgobr_search_by_title('puente', 78)
+#' # Return the first 78 matches that contain gasto in their title
+#' mydataesgobr <- search_by_title('gasto', 78)
 #'
-#' # Return the first 78 matches that contain puente in their title found in the
+#' # Return the first 78 matches that contain gasto in their title found in the
 #' second page (number 1)
-#' mydataesgobr <- dataesgobr_search_by_title('puente', 78, page = 1)
+#' mydataesgobr <- search_by_title('gasto', 78, page = 1)
 #' }
 #' @export
 #' @return A data.frame containing information about datasets that match with
@@ -40,8 +40,8 @@ search_by_title <- function(title, numentry = 50, page = 0) {
 #' @examples
 #' library(dataesgobr)
 #' \dontrun{
-#' datasets <- search_by_id('l01280066-presupuestos-20141')
-#' datasets <- search_by_id('https://datos.gob.es/es/catalogo/l01280066-tramites-salud1')
+#' dataset <- search_by_id('l01280066-presupuestos-20141')
+#' dataset <- search_by_id('https://datos.gob.es/es/catalogo/l01280066-tramites-salud1')
 #' }
 #' @export
 #' @return A dataesgobr object
@@ -72,8 +72,8 @@ search_by_id <- function(id) {
 #' @examples
 #' library(dataesgobr)
 #' \dontrun{
-#' datasetsPublic <- search_by_id('sector-publico', 20)
-#' datasetsSalud <- search_by_id('salud', page = 2)
+#' datasetsPublic <- search_by_theme('sector-publico', 20)
+#' datasetsSalud <- search_by_theme('salud', page = 2)
 #' }
 #' @export
 #' @return A data.frame
@@ -100,8 +100,8 @@ search_by_theme <- function(theme, numentry = 50, page = 0) {
 #' @examples
 #' library(dataesgobr)
 #' \dontrun{
-#' datasetsSpain <- search_by_spatial('Pais', 'España')
-#' datasetsJaen <- search_by_id('Provincia', 'Jaén')
+#' datasetsAndalucia <- search_by_spatial('Autonomia', 'Andalucia')
+#' datasetsJaen <- search_by_spatial('Provincia', 'Jaen')
 #' }
 #' @export
 #' @return A data.frame
@@ -129,8 +129,9 @@ search_by_spatial <- function(spatial1, spatial2, numentry = 50, page = 0) {
 #' @examples
 #' library(dataesgobr)
 #' \dontrun{
-#' url <- make_url("publisher", L01280066)
-#' datasets <- search_by_publisher(url)
+#' url <- make_url("publisher", 'L01280066')
+#' publisherID <- get_id(url)
+#' datasets <- search_by_publisher(publisherID)
 #' datasets <- search_by_publisher('L01280066')
 #' }
 #' @export
@@ -155,8 +156,9 @@ search_by_publisher <- function(publisher, numentry = 50, page = 0) {
 #' @examples
 #' library(dataesgobr)
 #' \dontrun{
-#' datasets <- search_by('atestados', 'salud', 'Jaén')
+#' datasets <- search_by('atestados', 'salud', 'L01280066')
 #' }
+#' @export
 #' @return A data.frame
 search_by <- function(title, theme, publisher) {
   datasets <- data.frame()
@@ -202,7 +204,7 @@ search_by <- function(title, theme, publisher) {
 #' library(dataesgobr)
 #' \dontrun{
 #' datasets <- search_by_title('salud')
-#' datasetsFiltered <- filter_by_title(datasets, '2018')
+#' datasetsFiltered <- filter_by_title(datasets, 'encuesta')
 #' }
 #' @export
 #' @return A data.frame with rows that matches the dataset title
@@ -233,7 +235,7 @@ filter_by_title <- function(data, q, quiet = FALSE) {
 #' library(dataesgobr)
 #' \dontrun{
 #' datasets <- search_by_title('salud')
-#' datasetsFiltered <- filter_by_description(datasets, '2018')
+#' datasetsFiltered <- filter_by_description(datasets, 'salud')
 #' }
 #' @export
 #' @return A data.frame with rows that matches the description
@@ -264,7 +266,7 @@ filter_by_description <- function(data, q, quiet = FALSE) {
 #' library(dataesgobr)
 #' \dontrun{
 #' datasets <- search_by_title('salud')
-#' datasetsFiltered <- filter_by_keywords(datasets, 'vacuna')
+#' datasetsFiltered <- filter_by_keywords(datasets, 'enfermedad')
 #' }
 #' @export
 #' @return A data.frame that matches any given keyword
@@ -297,8 +299,8 @@ filter_by_keywords <- function(data, keywords, quiet = FALSE) {
 #' library(dataesgobr)
 #' \dontrun{
 #' datasets <- search_by_title('salud')
-#' datasetsFiltered <- filter_by_title(datasets, '2018', 'vacuna')
-#' datasetsFiltered2 <- filter_by_title(datasets, '2018', keywords = 'vacuna')
+#' datasetsFiltered <- filter_by(datasets, 'salud', 'vacuna')
+#' datasetsFiltered2 <- filter_by(datasets, 'salud', keywords = 'enfermedad')
 #' }
 #' @export
 #' @return A data.frame that matches
@@ -339,11 +341,11 @@ filter_by <- function(data, title = NULL, description = NULL, keywords = NULL,
 #' \dontrun{
 #' datasets <- search_by_title('salud')
 #' keywords <- get_all_keywords(datasets)
-#' graphic_keywords(keywords, 'circular', '5')
+#' graphic_keywords(keywords, 'circular', 10)
 #'
 #' datasets <- search_by_title('salud')
 #' keywords <- get_all_keywords(datasets)
-#' graphic_keywords(keywords, 'barras', '7')
+#' graphic_keywords(keywords, 'barras', 11)
 #' }
 #' @import graphics
 #' @import grDevices
@@ -437,13 +439,11 @@ load_dataset <- function(dataframe, row = 1) {
 #' @examples
 #' library(dataesgobr)
 #' \dontrun{
-#' datasets <- search_by_title('salud')
-#' dataset <- load_dataset(datasets)
-#'
-#' download_data(dataset, "text/csv")
-#' download_data(dataset, "text/csv", FALSE, 2)
-#' download_data(dataset, "application/pdf", TRUE)
-#' download_data(dataset, "text/csv", position = 1)
+#' dataset <- search_by_id('l01350167-atestados-policia-local-de-las-palmas-de-gran-canaria-2013')
+#' download_data(dataset, "text/csv", noconfirm = TRUE)
+#' download_data(dataset, "text/csv", FALSE, 3, noconfirm = TRUE)
+#' download_data(dataset, "application/vnd.oasis.opendocument.spreadsheet", TRUE, noconfirm = TRUE)
+#' download_data(dataset, "application/vnd.oasis.opendocument.spreadsheet", FALSE, position = 6, noconfirm = TRUE)
 #' }
 #' @export
 #' @import httr
@@ -538,11 +538,9 @@ download_data <- function(x, format, all = TRUE, position = 0, noconfirm = FALSE
 #' @examples
 #' library(dataesgobr)
 #' \dontrun{
-#' datasets <- search_by_title('salud')
-#' dataset <- load_dataset(datasets)
-#'
-#' download_data(dataset, "text/csv")
-#' load_data('salud-2018.csv')
+#' dataset <- search_by_id('l01350167-atestados-policia-local-de-las-palmas-de-gran-canaria-2013')
+#' download_data(dataset, "text/csv", noconfirm = TRUE)
+#' load_data('DB_VEH_2013.csv')
 #' }
 #' @export
 #' @import httr
@@ -655,7 +653,7 @@ get_format <- function(ext) {
 #'
 #' format
 #'
-#' format <- get_format("application/pdf")
+#' format <- get_extension("application/pdf")
 #'
 #' format
 #' @return A string
@@ -835,7 +833,8 @@ check_csv_file <- function(file, noconfirm = FALSE, filename = NULL, path = NULL
 #' @examples
 #' library(dataesgobr)
 #' \dontrun{
-#' formats <- get_available_formats("dataesgobrObject")
+#' dataesgobrObject <- search_by_id('l01350167-atestados-policia-local-de-las-palmas-de-gran-canaria-2013')
+#' formats <- get_available_formats(dataesgobrObject)
 #' formats
 #' }
 #' @param data A dataesgobr object
@@ -865,7 +864,8 @@ get_available_formats <- function(data) {
 #' @examples
 #' library(dataesgobr)
 #' \dontrun{
-#' formats <- get_formats("dataesgobrObject")
+#' dataesgobrObject <- search_by_id('l01350167-atestados-policia-local-de-las-palmas-de-gran-canaria-2013')
+#' formats <- get_formats(dataesgobrObject)
 #' formats
 #' }
 #' @param data A dataesgobr object
@@ -1039,7 +1039,7 @@ make_url <- function(field, request, params = NULL) {
 #' \dontrun{
 #' datasets <- search_by_title('atestados')
 #' dataset <- load_dataset(datasets)
-#' download_data(dataset)
+#' download_data(dataset, "text/csv", TRUE, noconfirm = TRUE)
 #' content <- load_data("DB_HER_1999.csv")
 #' graph <- graphic_data("plot", content, "SEXO", xlim = 3, ylim = 2000)
 #' graph
@@ -1083,13 +1083,14 @@ stopifnot(is.character(type), is.character(columns) || is.vector(columns))
 #' @param question character containing the question
 #' @param options vector containing the options to answer the question
 #'
-#' @return logical
 #'
 #' @examples
 #' \dontrun{
 #' confirm_action("Write file memory.csv?")
 #' confirm_action("Do you like dataesgobr?", c("Yes" = TRUE, "No" = FALSE, "A bit" = FALSE))
 #' }
+#' @export
+#' @return logical
 confirm_action <- function(question, options = NULL) {
   stopifnot(is.character(question))
   if (is.null(options)) {

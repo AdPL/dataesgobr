@@ -28,12 +28,10 @@ passed like param from datos.gob.es
 \examples{
 library(dataesgobr)
 \dontrun{
-datasets <- search_by_title('salud')
-dataset <- load_dataset(datasets)
-
-download_data(dataset, "text/csv")
-download_data(dataset, "text/csv", FALSE, 2)
-download_data(dataset, "application/pdf", TRUE)
-download_data(dataset, "text/csv", position = 1)
+dataset <- search_by_id('l01350167-atestados-policia-local-de-las-palmas-de-gran-canaria-2013')
+download_data(dataset, "text/csv", noconfirm = TRUE)
+download_data(dataset, "text/csv", FALSE, 3, noconfirm = TRUE)
+download_data(dataset, "application/vnd.oasis.opendocument.spreadsheet", TRUE, noconfirm = TRUE)
+download_data(dataset, "application/vnd.oasis.opendocument.spreadsheet", FALSE, position = 6, noconfirm = TRUE)
 }
 }
