@@ -4,7 +4,7 @@
 \alias{check_file}
 \title{Check if the dataset has a correct format}
 \usage{
-check_file(file, path = NULL)
+check_file(file, noconfirm = FALSE, outfile = NULL)
 }
 \arguments{
 \item{file}{The file to check}
@@ -22,4 +22,5 @@ Check if the dataset has a correct format
 library(dataesgobr)
 file <- system.file("extdata", "fichero.csv", package="dataesgobr")
 correct <- check_file(file)
+correct <- check_file(file, noconfirm = TRUE, outfile = tempdir())
 }

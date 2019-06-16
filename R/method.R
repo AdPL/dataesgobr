@@ -575,46 +575,49 @@ download_data <- function(x, format, all = TRUE, position = 0, noconfirm = FALSE
 #' @examples
 #' library(dataesgobr)
 #' \dontrun{
-#' dataset <- search_by_id('l01350167-atestados-policia-local-de-las-palmas-de-gran-canaria-2013')
-#' download_data(dataset, "text/csv", noconfirm = TRUE)
-#' load_data('DB_VEH_2013.csv')
+#' file <- system.file("extdata", "fichero.csv", package = "dataesgobr")
+#' load_data(file, filename = "nuevo.csv")
+#' load_data(file, outfile = tempdir())
 #' }
 #' @export
 #' @import httr
 #' @import readr
 #' @import stringr
 #' @return A data.frame
-load_data <- function(file, path = NULL) {
+load_data <- function(file, filename = NULL, outfile = NULL) {
   stopifnot(is.character(file))
   cap_speed <- progress(type = c("down", "up"), con = stdout())
 
   format <- get_format(file)
-  name <- get_name(file, format)
-
-  if (is.null(path)) {
-    path <- getwd()
+  if (is.null(filename)) {
+    name <- get_name(file, format)
+  } else {
+    name <- filename
   }
-  setwd(path)
+
+  if (is.null(outfile)) {
+    outfile <- tempdir()
+  }
 
   switch (format,
     "text/csv" = {
       message("Loading csv file.")
-      check_csv_file(name, noconfirm = TRUE, path = path)
+      check_csv_file(file, noconfirm = TRUE, filename = name, outfile = outfile)
 
-      symbol <- get_symbol(name)
-      content <- read_delim(name, delim = symbol)
+      symbol <- get_symbol(file)
+      content <- read_delim(file, delim = symbol)
     },
     "application/vnd.ms-excel" = {
       message("Loading xls file.")
-      content <- as.data.frame(readxl::read_excel(name))
+      content <- as.data.frame(readxl::read_excel(file))
     },
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" = {
       message("Loading xls file.")
-      content <- as.data.frame(readxl::read_excel(name))
+      content <- as.data.frame(readxl::read_excel(file))
     },
     "application/vnd.oasis.opendocument.spreadsheet" = {
       message("Loading ods file.")
-      content <- readODS::read_ods(name)
+      content <- readODS::read_ods(file)
     }
   )
   content
@@ -753,21 +756,24 @@ get_symbol <- function(file) {
 #' library(dataesgobr)
 #' file <- system.file("extdata", "fichero.csv", package="dataesgobr")
 #' correct <- check_file(file)
+#' correct <- check_file(file, noconfirm = TRUE, outfile = tempdir())
 #' @export
 #' @import httr
 #' @return Return a logical, if the file is correct it will be TRUE, else FALSE
-check_file <- function(file, path = NULL) {
+check_file <- function(file, noconfirm = FALSE, outfile = NULL) {
   stopifnot(is.character(file))
-  if (is.null(path)) {
-    path <- getwd()
+  if (is.null(outfile)) {
+    outfile <- tempdir()
   }
-  setwd(path)
+
   result <- FALSE
-  if(file.exists(file)) {
+  if (file.exists(file.path(file))) {
     format <- get_format(file)
     switch(format,
            "text/csv" = {
-             result <- check_csv_file(file, path = path)
+             message("checking")
+             result <- check_csv_file(file, noconfirm = noconfirm,
+                                      outfile = outfile)
            }
     )
     if (!result) {
@@ -797,8 +803,12 @@ check_file <- function(file, path = NULL) {
 #' library(dataesgobr)
 #' file <- system.file("extdata", "fichero.csv", package="dataesgobr")
 #' correct <- check_csv_file(file)
-check_csv_file <- function(file, noconfirm = FALSE, filename = NULL, path = NULL) {
-  stopifnot(file.exists(file))
+#' correct <- check_csv_file(file, noconfirm = TRUE)
+#' correct <- check_csv_file(file, noconfirm = TRUE, filename = "nuevo.csv")
+#' correct <- check_csv_file(file, noconfirm = TRUE, outfile = tempdir())
+check_csv_file <- function(file, noconfirm = FALSE, filename = NULL, outfile = NULL) {
+  stopifnot(file.exists(file.path(file)))
+  name <- get_name(file, "text/csv")
   content <- read_lines(file)
   vector_complete = vector('character')
 
@@ -806,10 +816,11 @@ check_csv_file <- function(file, noconfirm = FALSE, filename = NULL, path = NULL
   count_lines <- 0
   confirm <- FALSE
 
-  if(is.null(path)) {
-    path <- getwd()
+  if(is.null(outfile)) {
+    path <- tempdir()
+    outfile <- path
   }
-  setwd(path)
+
   if(file.size(file) == 0) {
     warning("The file is empty")
     correct <- FALSE
@@ -843,25 +854,30 @@ check_csv_file <- function(file, noconfirm = FALSE, filename = NULL, path = NULL
     }
 
     if(!is.null(filename)) {
-      file <- filename
+      name <- filename
     } else {
       update <- FALSE
       if(!noconfirm)
-        update <- confirm_action(paste("Do you want to change the file's name?"))
+        update <- confirm_action(paste0("Do you want to change the file's name? | Actual: ", name))
       if (update) {
-        file <- readline(paste("New name: "))
+        name <- readline(paste("New name: "))
       }
     }
 
     if (!noconfirm) {
-      confirm <- confirm_action(paste("Do you want to save the modified file:", file))
+      confirmOutfile <- confirm_action(paste0("Actual outfile: ", outfile, " | change?"))
+      if (confirmOutfile) {
+        outfile <- readline("New outfile: ")
+      }
+      confirm <- confirm_action(paste0("Save ", outfile, "/", name, " file?"))
     }
     if (confirm || noconfirm) {
-      write.table(vector_complete, file, row.names = FALSE, col.names = FALSE,
+      route <- paste0(outfile, "/", name)
+      write.table(vector_complete, route, row.names = FALSE, col.names = FALSE,
                   quote = FALSE, fileEncoding = "UTF-8")
     }
   }
-  correct
+  return(correct)
 }
 
 #' @title Generate a data.frame that contains the type of elements,

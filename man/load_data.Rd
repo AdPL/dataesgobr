@@ -4,7 +4,7 @@
 \alias{load_data}
 \title{Load data from a file}
 \usage{
-load_data(file, path = NULL)
+load_data(file, filename = NULL, outfile = NULL)
 }
 \arguments{
 \item{file}{A file with data previously downloaded}
@@ -21,8 +21,8 @@ This function loads the data from the file passed like param
 \examples{
 library(dataesgobr)
 \dontrun{
-dataset <- search_by_id('l01350167-atestados-policia-local-de-las-palmas-de-gran-canaria-2013')
-download_data(dataset, "text/csv", noconfirm = TRUE)
-load_data('DB_VEH_2013.csv')
+file <- system.file("extdata", "fichero.csv", package = "dataesgobr")
+load_data(file, filename = "nuevo.csv")
+load_data(file, outfile = tempdir())
 }
 }

@@ -4,7 +4,8 @@
 \alias{check_csv_file}
 \title{Check if the csv file has a correct format}
 \usage{
-check_csv_file(file, noconfirm = FALSE, filename = NULL, path = NULL)
+check_csv_file(file, noconfirm = FALSE, filename = NULL,
+  outfile = NULL)
 }
 \arguments{
 \item{file}{The file's path}
@@ -28,4 +29,7 @@ Check if the csv file has a correct format
 library(dataesgobr)
 file <- system.file("extdata", "fichero.csv", package="dataesgobr")
 correct <- check_csv_file(file)
+correct <- check_csv_file(file, noconfirm = TRUE)
+correct <- check_csv_file(file, noconfirm = TRUE, filename = "nuevo.csv")
+correct <- check_csv_file(file, noconfirm = TRUE, outfile = tempdir())
 }
