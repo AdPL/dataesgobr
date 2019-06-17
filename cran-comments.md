@@ -1,15 +1,13 @@
 ## Resubmission
 This is a resubmission. In this version I have:
 
-* Added a web reference to the API of the Spain Government in the description.
+* Replaced \dontrun by \donttest. Annotation: When a function needs to send a request to the API it will be in donttest because I do not know the time necessary for execution the request.
 
-* More elaborate description about data provided by the API.
+* The examples have been updated and checked. Now is possible to execute them without errors.
 
-* Added confirm_action function in order to check if the user is aggre about something (ex. save a file).
+* Changed getwd and setwd in functions in order to work with tempdir(). The functions do not change the working directory now.
 
-* Added example files in inst/extdata to execute some examples in the functions.
-
-* shinyApp do not modify the global environment (<<-), the app works with a local environment now.
+* Replaced path parameter to outfile parameter. The outfile parameter indicates the output directory.
 
 ## Test environments
 * local macOS Sierra, R 3.6.0
