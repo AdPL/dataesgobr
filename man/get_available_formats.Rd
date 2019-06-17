@@ -20,7 +20,7 @@ information and repetitions for each one
 \examples{
 library(dataesgobr)
 \donttest{
-dataesgobrObject <- search_by_id('l01350167-atestados-policia-local-de-las-palmas-de-gran-canaria-2013')
+dataesgobrObject <- search_by_id('l01280066-horarios-de-metro1')
 formats <- get_available_formats(dataesgobrObject)
 formats
 }

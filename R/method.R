@@ -444,14 +444,13 @@ load_dataset <- function(dataframe, row = 1) {
 #' @examples
 #' library(dataesgobr)
 #' \donttest{
-#' id <- "l01350167-atestados-policia-local-de-las-palmas-de-gran-canaria-2013"
+#' id <- "l01280066-horarios-de-metro1"
 #' dataset <- search_by_id(id)
 #' download_data(dataset, "text/csv", noconfirm = TRUE, outfile = tempdir())
 #' download_data(dataset, "text/csv", noconfirm = TRUE, overwrite = TRUE, outfile = tempdir())
-#' download_data(dataset, "text/csv", FALSE, 3, noconfirm = TRUE)
-#' download_data(dataset, "text/csv", FALSE, 3, noconfirm = TRUE, overwrite = TRUE)
-#' download_data(dataset, "application/vnd.oasis.opendocument.spreadsheet", TRUE, noconfirm = TRUE, outfile = tempdir())
-#' download_data(dataset, "application/vnd.oasis.opendocument.spreadsheet", FALSE, position = 6, noconfirm = TRUE, overwrite = TRUE)
+#' download_data(dataset, "text/csv", FALSE, 1, noconfirm = TRUE)
+#' download_data(dataset, "text/csv", FALSE, 1, noconfirm = TRUE, overwrite = TRUE)
+#' download_data(dataset, "application/pdf", TRUE, noconfirm = TRUE, outfile = tempdir())
 #' }
 #' @export
 #' @import httr
@@ -873,7 +872,7 @@ check_csv_file <- function(file, noconfirm = FALSE, filename = NULL, outfile = N
 #' @examples
 #' library(dataesgobr)
 #' \donttest{
-#' dataesgobrObject <- search_by_id('l01350167-atestados-policia-local-de-las-palmas-de-gran-canaria-2013')
+#' dataesgobrObject <- search_by_id('l01280066-horarios-de-metro1')
 #' formats <- get_available_formats(dataesgobrObject)
 #' formats
 #' }
@@ -904,7 +903,7 @@ get_available_formats <- function(data) {
 #' @examples
 #' library(dataesgobr)
 #' \donttest{
-#' dataesgobrObject <- search_by_id('l01350167-atestados-policia-local-de-las-palmas-de-gran-canaria-2013')
+#' dataesgobrObject <- search_by_id('l01280066-horarios-de-metro1')
 #' formats <- get_formats(dataesgobrObject)
 #' formats
 #' }
