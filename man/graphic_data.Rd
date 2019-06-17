@@ -32,7 +32,8 @@ Draw a plot using the pararameters passed
 library(dataesgobr)
 \donttest{
 datasets <- search_by_title('atestados')
-dataset <- load_dataset(datasets)
+datasetsfiltered <- filter_by_title(datasets, "1999")
+dataset <- load_dataset(datasetsfiltered)
 download_data(dataset, "text/csv", TRUE, noconfirm = TRUE)
 content <- load_data(file.path(tempdir(), "DB_HER_1999.csv"))
 graph <- graphic_data("plot", content, "SEXO", xlim = 3, ylim = 2000)

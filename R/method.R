@@ -741,7 +741,6 @@ get_symbol <- function(file) {
 #' @examples
 #' library(dataesgobr)
 #' file <- system.file("extdata", "fichero.csv", package="dataesgobr")
-#' correct <- check_file(file)
 #' correct <- check_file(file, noconfirm = TRUE, outfile = tempdir())
 #' @export
 #' @import httr
@@ -787,9 +786,8 @@ check_file <- function(file, noconfirm = FALSE, outfile = NULL) {
 #' @examples
 #' library(dataesgobr)
 #' file <- system.file("extdata", "fichero.csv", package="dataesgobr")
-#' correct <- check_csv_file(file)
-#' correct <- check_csv_file(file, outfile = tempdir())
 #' correct <- check_csv_file(file, noconfirm = TRUE)
+#' correct <- check_csv_file(file, noconfirm = TRUE, outfile = tempdir())
 #' correct <- check_csv_file(file, noconfirm = TRUE, filename = "nuevo.csv")
 #' correct <- check_csv_file(file, noconfirm = TRUE, outfile = tempdir())
 check_csv_file <- function(file, noconfirm = FALSE, filename = NULL, outfile = NULL) {
@@ -931,7 +929,6 @@ get_formats <- function(data) {
 #' @examples
 #' library(dataesgobr)
 #' id <- get_id("https://datos.gob.es/es/catalogo/l01280066-tramites-salud1")
-#' id
 #' @import stringi
 #' @return A string that contains the ID
 get_id <- function(url) {
@@ -1077,7 +1074,8 @@ make_url <- function(field, request, params = NULL) {
 #' library(dataesgobr)
 #' \donttest{
 #' datasets <- search_by_title('atestados')
-#' dataset <- load_dataset(datasets)
+#' datasetsfiltered <- filter_by_title(datasets, "1999")
+#' dataset <- load_dataset(datasetsfiltered)
 #' download_data(dataset, "text/csv", TRUE, noconfirm = TRUE)
 #' content <- load_data(file.path(tempdir(), "DB_HER_1999.csv"))
 #' graph <- graphic_data("plot", content, "SEXO", xlim = 3, ylim = 2000)
@@ -1122,12 +1120,6 @@ stopifnot(is.character(type), is.character(columns) || is.vector(columns))
 #' @param question character containing the question
 #' @param options vector containing the options to answer the question
 #'
-#'
-#' @examples
-#' \donttest{
-#' confirm_action("Write file memory.csv?")
-#' confirm_action("Do you like dataesgobr?", c("Yes" = TRUE, "No" = FALSE, "A bit" = FALSE))
-#' }
 #' @export
 #' @return logical
 confirm_action <- function(question, options = NULL) {

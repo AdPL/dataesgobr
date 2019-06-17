@@ -28,9 +28,8 @@ Check if the csv file has a correct format
 \examples{
 library(dataesgobr)
 file <- system.file("extdata", "fichero.csv", package="dataesgobr")
-correct <- check_csv_file(file)
-correct <- check_csv_file(file, outfile = tempdir())
 correct <- check_csv_file(file, noconfirm = TRUE)
+correct <- check_csv_file(file, noconfirm = TRUE, outfile = tempdir())
 correct <- check_csv_file(file, noconfirm = TRUE, filename = "nuevo.csv")
 correct <- check_csv_file(file, noconfirm = TRUE, outfile = tempdir())
 }

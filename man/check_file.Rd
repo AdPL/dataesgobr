@@ -23,6 +23,5 @@ Check if the dataset has a correct format
 \examples{
 library(dataesgobr)
 file <- system.file("extdata", "fichero.csv", package="dataesgobr")
-correct <- check_file(file)
 correct <- check_file(file, noconfirm = TRUE, outfile = tempdir())
 }
